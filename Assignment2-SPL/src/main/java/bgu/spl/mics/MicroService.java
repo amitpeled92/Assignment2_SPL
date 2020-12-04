@@ -1,5 +1,7 @@
 package bgu.spl.mics;
 
+import bgu.spl.mics.application.messages.FinishEvent;
+
 /**
  * The MicroService is an abstract class that any micro-service in the system
  * must extend. The abstract MicroService class is responsible to get and
@@ -133,7 +135,7 @@ public abstract class MicroService implements Runnable {
      * message.
      */
     protected final void terminate() {
-    	
+        messageBus.sendEvent(new FinishEvent());
     }
 
     /**
@@ -150,7 +152,21 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
-    	
+    	messageBus.register(this);
+    	initialize();
+        /**
+         * massage-loop begins...
+         */
+        //while(this.queue.isEmpty()){
+        try {
+            messageBus.awaitMessage(this);
+            //callback - "start handling the event"
+        }
+        catch (Exception e){
+            //callback - "can't handle the event, the microservice is busy with other event"
+        }
+        //} //end while
+        messageBus.unregister(this);
     }
 
 }
