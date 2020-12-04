@@ -160,7 +160,7 @@ public abstract class MicroService implements Runnable {
         //while(this.queue.isEmpty()){
         try {
             messageBus.awaitMessage(this);
-            //callback - "start handling the event"
+            //callback - "start handling the event by "+ getName()
         }
         catch (Exception e){
             //callback - "can't handle the event, the microservice is busy with other event"
