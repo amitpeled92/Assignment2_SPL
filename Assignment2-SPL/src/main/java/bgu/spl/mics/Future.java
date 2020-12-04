@@ -18,6 +18,8 @@ public class Future<T> {
 	 * This should be the the only public constructor in this class.
 	 */
 	public Future() {
+		result=null;
+		isDone=false;
 		
 	}
 	
@@ -30,22 +32,26 @@ public class Future<T> {
      * 	       
      */
 	public T get() {
-		
-        return null; 
+		while (!isDone)
+		{
+			wait();
+		}
+        return result;
 	}
 	
 	/**
      * Resolves the result of this Future object.
      */
 	public void resolve (T result) {
-		
+		this.result= result;
+		isDone=true
 	}
 	
 	/**
      * @return true if this object has been resolved, false otherwise
      */
 	public boolean isDone() {
-		return true;
+		return this.isDone;
 	}
 	
 	/**
@@ -60,8 +66,15 @@ public class Future<T> {
      *         elapsed, return null.
      */
 	public T get(long timeout, TimeUnit unit) {
-		
-        return null;
+		if (!isDone)
+		{
+			wait(long,unit);
+		}
+		if(isDone)
+		{
+			return result;
+		}
+		return null;
 	}
 
 }
