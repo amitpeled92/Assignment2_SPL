@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.BombDestroyerEvent;
+import bgu.spl.mics.application.messages.GettingStartedEvent;
 import bgu.spl.mics.application.passiveObjects.Attack;
 
 /**
@@ -24,6 +26,7 @@ public class LeiaMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-    	
+        this.subscribeEvent(GettingStartedEvent.class, c -> {});
+        this.subscribeBroadcast(GettingStartedEvent.class, c -> {});
     }
 }

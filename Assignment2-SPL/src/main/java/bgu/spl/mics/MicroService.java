@@ -19,14 +19,18 @@ package bgu.spl.mics;
  * <p>
  */
 public abstract class MicroService implements Runnable { 
-    
+
+    private MessageBus messageBus;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
      *             does not have to be unique)
      */
     public MicroService(String name) {
-    	
+        messageBus = new MessageBusImpl();
+//        messageBus.msHashMap.add(name);
+        messageBus.register(this);
+        initialize();
     }
 
     /**

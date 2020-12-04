@@ -2,6 +2,7 @@ package bgu.spl.mics.application.services;
 
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.AttackEvent;
 
 /**
  * HanSoloMicroservices is in charge of the handling {@link AttackEvents}.
@@ -20,6 +21,7 @@ public class HanSoloMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-
+        this.subscribeEvent(AttackEvent.class, c -> {});
+        this.subscribeBroadcast(AttackEvent.class, c -> {});
     }
 }

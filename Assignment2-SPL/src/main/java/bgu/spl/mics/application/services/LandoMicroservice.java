@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.BombDestroyerEvent;
 
 /**
  * LandoMicroservice
@@ -15,6 +17,7 @@ public class LandoMicroservice  extends MicroService {
 
     @Override
     protected void initialize() {
-       
+        this.subscribeEvent(BombDestroyerEvent.class, c -> {});
+        this.subscribeBroadcast(BombDestroyerEvent.class, c -> {});
     }
 }

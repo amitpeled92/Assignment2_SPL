@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Event;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.AttackEvent;
 
 
 /**
@@ -19,6 +21,7 @@ public class C3POMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-
+        this.subscribeEvent(AttackEvent.class, c -> {});
+        this.subscribeBroadcast(AttackEvent.class, c -> {});
     }
 }
