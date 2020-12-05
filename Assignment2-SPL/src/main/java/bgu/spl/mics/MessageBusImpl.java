@@ -1,18 +1,26 @@
 package bgu.spl.mics;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
-////checking if git works
+
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
  * Write your implementation here!
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl implements MessageBus {
-	protected Queue<MicroService> microServiceQueue;
+	private static MessageBusImpl messageBusInstance = null;
+	private HashMap<MicroService,Queue<Message>> hashMap;
 
-	protected Queue<MicroService> getQueue(){
-		return microServiceQueue;
+	private MessageBusImpl(){
+
+	}
+
+	public static MessageBusImpl getInstance(){
+		if(messageBusInstance == null)
+			messageBusInstance = new MessageBusImpl();
+		return messageBusInstance;
 	}
 	
 	@Override
@@ -44,14 +52,17 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void register(MicroService m) {
-		if(microServiceQueue == null)
-			microServiceQueue = new LinkedList<>();
-		microServiceQueue.add(m);
+		if(hashMap == null)
+			hashMap = new HashMap<MicroService,Queue<Message>>();
+		Queue<Message> qOfMicroservice = new LinkedList<>();
+		hashMap.put(m,qOfMicroservice);
 	}
 
 	@Override
 	public void unregister(MicroService m) {
-		
+		if(hashMap.containsKey(m)){
+			hashMap.remove(m);
+		}
 	}
 
 	@Override
