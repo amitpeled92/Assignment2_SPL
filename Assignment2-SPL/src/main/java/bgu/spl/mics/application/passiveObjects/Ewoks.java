@@ -15,6 +15,9 @@ public class Ewoks {
     private static Ewoks ewoksInstance = null;
     private ArrayList<Ewok> ewoksList;
 
+    /**
+     * creating Ewoks as a thread safe singleton
+     */
     private Ewoks(){
         //Ewoks going to be a list of every single ewok that the program including
         ewoksList=new ArrayList<>();
