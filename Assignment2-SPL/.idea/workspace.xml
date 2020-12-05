@@ -54,6 +54,9 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="SDKs" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -83,9 +86,17 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
+    <state x="-1480" y="94" key="#Project_Structure" timestamp="1607185286458">
+      <screen x="-1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="-1480" y="94" key="#Project_Structure/0.0.1280.680/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1607185286458" />
     <state x="-1155" y="226" key="#com.intellij.ide.util.MemberChooser" timestamp="1607161610983">
       <screen x="-1920" y="0" width="1920" height="1040" />
     </state>
     <state x="-1155" y="226" key="#com.intellij.ide.util.MemberChooser/0.0.1280.680/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1607161610983" />
+    <state x="-1231" y="387" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1607185051974">
+      <screen x="-1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="-1231" y="387" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1280.680/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1607185051974" />
   </component>
 </project>
