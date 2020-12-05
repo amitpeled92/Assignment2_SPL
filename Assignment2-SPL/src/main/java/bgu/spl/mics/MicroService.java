@@ -2,6 +2,9 @@ package bgu.spl.mics;
 
 import bgu.spl.mics.application.messages.FinishEvent;
 
+import java.util.Queue;
+import java.util.concurrent.PriorityBlockingQueue;
+
 /**
  * The MicroService is an abstract class that any micro-service in the system
  * must extend. The abstract MicroService class is responsible to get and
@@ -23,6 +26,8 @@ import bgu.spl.mics.application.messages.FinishEvent;
 public abstract class MicroService implements Runnable, Callback {
 
     protected MessageBus messageBus;
+    private String msName;
+    private String messageLoopMannerName;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -30,6 +35,8 @@ public abstract class MicroService implements Runnable, Callback {
      */
     public MicroService(String name) {
         messageBus = new MessageBusImpl();
+        msName = name;
+        messageLoopMannerName = null;
 //        messageBus.msHashMap.add(name);
 //        messageBus.register(this);
         initialize();
@@ -57,7 +64,10 @@ public abstract class MicroService implements Runnable, Callback {
      *                 queue.
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
-    	
+        Queue<E> q = new PriorityBlockingQueue<>();
+    	messageBus.hashmap.at(i).add(q);
+    	messageBus.hashmap.at(i).add(callback);
+    	//callback.call();
     }
 
     /**
@@ -81,7 +91,10 @@ public abstract class MicroService implements Runnable, Callback {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
-    	
+        Queue<B> q = new PriorityBlockingQueue<>();
+        messageBus.hashmap.at(i).add(q);
+        messageBus.hashmap.at(i).add(callback);
+        //callback.call();
     }
 
     /**
@@ -97,7 +110,13 @@ public abstract class MicroService implements Runnable, Callback {
      * 	       			null in case no micro-service has subscribed to {@code e.getClass()}.
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
-    	
+    	messageBus.sendEvent(e);
+    	for(Queue q:hashmap){
+    	    if(q.getClass() == e.getClass()){
+    	        Future<T> f = new Future<>();
+    	        return f;
+            }
+        }
         return null; 
     }
 
@@ -108,7 +127,12 @@ public abstract class MicroService implements Runnable, Callback {
      * @param b The broadcast message to send
      */
     protected final void sendBroadcast(Broadcast b) {
-    	
+        messageBus.sendBroadcast(b);
+        for(Queue q:hashmap){
+            if(q.getClass() == b.getClass()){
+                Future<Boolean> f = new Future<>();
+            }
+        }
     }
 
     /**
@@ -122,7 +146,7 @@ public abstract class MicroService implements Runnable, Callback {
      *               {@code e}.
      */
     protected final <T> void complete(Event<T> e, T result) {
-    	
+    	messageBus.complete(e, result);
     }
 
     /**
@@ -143,7 +167,7 @@ public abstract class MicroService implements Runnable, Callback {
      *         construction time and is used mainly for debugging purposes.
      */
     public final String getName() {
-        return null;
+        return msName;
     }
 
     /**
@@ -154,11 +178,10 @@ public abstract class MicroService implements Runnable, Callback {
     public final void run() {
     	messageBus.register(this);
     	initialize();
-        /**
-         * massage-loop begins...
-         */
-        //while(this.queue.isEmpty()){
+//        while(this.queue.isEmpty()){
         try {
+//            if(e.getClass() == AttackEvent)
+//                String s = messageLoopMannerCheck();
             messageBus.awaitMessage(this);
             //callback - "start handling the event by "+ getName()
         }
@@ -169,5 +192,30 @@ public abstract class MicroService implements Runnable, Callback {
         messageBus.unregister(this);
     }
 
+    /**
+     * this method called once a microservice needs to create a callback to an event
+     * @param c is the event/message that the microservice works with to create the callback
+     */
     public abstract void call(Object c);
+
+    /**
+     * in our program there are only 2 microservices the can get the same type of events - HanSolo & C3PO.
+     * therefore, every time this method called, it checks which of these 2 microservice will get the current event
+     * to handle at that point of time.
+     * @return a String of the name of the microservice that the event will be added to its queue
+     */
+    public String messageLoopMannerCheck(){
+        if(messageLoopMannerName == null){
+            messageLoopMannerName = "HanSolo";
+            return messageLoopMannerName; //HanSolo will handle the event this time
+        }
+        else if(messageLoopMannerName.equals("HanSolo")){
+            messageLoopMannerName = "C3PO";
+            return messageLoopMannerName; //C3PO will handle the event this time
+        }
+        else{
+            messageLoopMannerName = "HanSolo";
+            return messageLoopMannerName; //HanSolo will handle the event this time
+        }
+    }
 }
