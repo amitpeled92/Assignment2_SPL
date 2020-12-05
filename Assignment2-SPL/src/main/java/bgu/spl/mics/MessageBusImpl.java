@@ -9,9 +9,9 @@ import java.util.Queue;
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl implements MessageBus {
-	protected Queue<MicroService> microServiceQueue;
+	protected HashMap<Queue<Message>> microServiceQueues;
 
-	protected Queue<MicroService> getQueue(){
+	//protected Queue<MicroService> getQueue(){
 		return microServiceQueue;
 	}
 	
@@ -45,13 +45,20 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public void register(MicroService m) {
 		if(microServiceQueue == null)
-			microServiceQueue = new LinkedList<>();
-		microServiceQueue.add(m);
+			microServiceQueue = new HashMap<Queue<Message>>();
+		Queue<Message> q= new Queue<Message>();
+		//locate the queue to m while inser it;
+		microServiceQueues.add(q);
+
 	}
 
 	@Override
 	public void unregister(MicroService m) {
-		
+		if (microServiceQueues.contains(m))
+		{
+			//delete the queue where the ndex is m
+			microServiceQueues.delete(m)
+		}
 	}
 
 	@Override

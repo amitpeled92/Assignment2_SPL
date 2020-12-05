@@ -68,7 +68,7 @@ public class Future<T> {
 	public T get(long timeout, TimeUnit unit) {
 		if (!isDone)
 		{
-			wait(long,unit);
+			unit.wait(long);
 		}
 		if(isDone)
 		{
