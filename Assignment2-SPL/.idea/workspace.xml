@@ -55,6 +55,11 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\amitp\Documents\GitHub\Assignment2_SPL\Assignment2-SPL\src\main\java\bgu\spl\mics\application" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -78,9 +83,9 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="-1155" y="226" key="#com.intellij.ide.util.MemberChooser" timestamp="1607075666890">
+    <state x="-1155" y="226" key="#com.intellij.ide.util.MemberChooser" timestamp="1607161610983">
       <screen x="-1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="-1155" y="226" key="#com.intellij.ide.util.MemberChooser/0.0.1280.680/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1607075666890" />
+    <state x="-1155" y="226" key="#com.intellij.ide.util.MemberChooser/0.0.1280.680/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1607161610983" />
   </component>
 </project>

@@ -1,8 +1,9 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Event;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.messages.BombDestroyerEvent;
+import bgu.spl.mics.application.messages.FinishEvent;
 
 /**
  * LandoMicroservice
@@ -19,5 +20,14 @@ public class LandoMicroservice  extends MicroService {
     protected void initialize() {
         this.subscribeEvent(BombDestroyerEvent.class, c -> {});
         this.subscribeBroadcast(BombDestroyerEvent.class, c -> {});
+    }
+
+    @Override
+    public void call(Object c) {
+//        if(messageBus.hashmap.isEmpty().at(i) != null) {
+//            Event<Boolean> finishEvent = new FinishEvent();
+//            messageBus.sendEvent(finishEvent);
+//        }
+        //TODO: Adding "All threads terminated {time} milliseconds after the program finished. to Diary"
     }
 }

@@ -1,0 +1,4 @@
+
+There are 2 attacks.
+HanSolo and C3PO finish their tasks ~1000 milliseconds one after the other.
+All threads terminate ~4000 milliseconds later.

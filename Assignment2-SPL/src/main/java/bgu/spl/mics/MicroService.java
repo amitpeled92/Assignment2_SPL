@@ -20,9 +20,9 @@ import bgu.spl.mics.application.messages.FinishEvent;
  * Only private fields and methods may be added to this class.
  * <p>
  */
-public abstract class MicroService implements Runnable { 
+public abstract class MicroService implements Runnable, Callback {
 
-    private MessageBus messageBus;
+    protected MessageBus messageBus;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -31,7 +31,7 @@ public abstract class MicroService implements Runnable {
     public MicroService(String name) {
         messageBus = new MessageBusImpl();
 //        messageBus.msHashMap.add(name);
-        messageBus.register(this);
+//        messageBus.register(this);
         initialize();
     }
 
@@ -169,4 +169,5 @@ public abstract class MicroService implements Runnable {
         messageBus.unregister(this);
     }
 
+    public abstract void call(Object c);
 }
