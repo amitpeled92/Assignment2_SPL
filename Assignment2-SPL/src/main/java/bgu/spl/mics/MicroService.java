@@ -25,7 +25,7 @@ import java.util.concurrent.PriorityBlockingQueue;
  */
 public abstract class MicroService implements Runnable, Callback {
 
-    protected MessageBus messageBus;
+    protected MessageBusImpl messageBus;
     private String msName;
     private String messageLoopMannerName;
 
@@ -34,11 +34,9 @@ public abstract class MicroService implements Runnable, Callback {
      *             does not have to be unique)
      */
     public MicroService(String name) {
-        messageBus = new MessageBusImpl();
+        messageBus = MessageBusImpl.getInstance();
         msName = name;
         messageLoopMannerName = null;
-//        messageBus.msHashMap.add(name);
-//        messageBus.register(this);
         initialize();
     }
 
@@ -64,10 +62,12 @@ public abstract class MicroService implements Runnable, Callback {
      *                 queue.
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
-        Queue<E> q = new PriorityBlockingQueue<>();
-    	messageBus.hashmap.at(i).add(q);
-    	messageBus.hashmap.at(i).add(callback);
-    	//callback.call();
+//      Queue<E> q = new PriorityBlockingQueue<>();
+//    	messageBus.hashmap.at(i).add(q);
+//    	messageBus.hashmap.at(i).add(callback);
+
+        messageBus.subscribeEvent(type, this);
+        //callback.call();
     }
 
     /**
@@ -91,9 +91,11 @@ public abstract class MicroService implements Runnable, Callback {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
-        Queue<B> q = new PriorityBlockingQueue<>();
-        messageBus.hashmap.at(i).add(q);
-        messageBus.hashmap.at(i).add(callback);
+//        Queue<B> q = new PriorityBlockingQueue<>();
+//        messageBus.hashmap.at(i).add(q);
+//        messageBus.hashmap.at(i).add(callback);
+
+        messageBus.subscribeBroadcast(type,this);
         //callback.call();
     }
 
@@ -111,12 +113,14 @@ public abstract class MicroService implements Runnable, Callback {
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
     	messageBus.sendEvent(e);
-    	for(Queue q:hashmap){
-    	    if(q.getClass() == e.getClass()){
-    	        Future<T> f = new Future<>();
-    	        return f;
-            }
-        }
+    	//call(new Object());
+
+//    	for(Queue q:hashmap){
+//    	    if(q.getClass() == e.getClass()){
+//    	        Future<T> f = new Future<>();
+//    	        return f;
+//            }
+//        }
         return null; 
     }
 
@@ -128,11 +132,13 @@ public abstract class MicroService implements Runnable, Callback {
      */
     protected final void sendBroadcast(Broadcast b) {
         messageBus.sendBroadcast(b);
-        for(Queue q:hashmap){
-            if(q.getClass() == b.getClass()){
-                Future<Boolean> f = new Future<>();
-            }
-        }
+        //call(new Object());
+
+//        for(Queue q:hashmap){
+//            if(q.getClass() == b.getClass()){
+//                Future<Boolean> f = new Future<>();
+//            }
+//        }
     }
 
     /**
@@ -147,6 +153,7 @@ public abstract class MicroService implements Runnable, Callback {
      */
     protected final <T> void complete(Event<T> e, T result) {
     	messageBus.complete(e, result);
+        //call(new Object());
     }
 
     /**
