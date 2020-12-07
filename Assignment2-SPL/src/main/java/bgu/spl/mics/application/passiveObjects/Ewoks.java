@@ -13,14 +13,18 @@ import java.util.ArrayList;
  */
 public class Ewoks {
     private static Ewoks ewoksInstance = null;
-    private ArrayList<Ewok> ewoksList;
+    private  Ewok[] ewoksarr;
 
     /**
      * creating Ewoks as a thread safe singleton
      */
     private Ewoks(){
         //Ewoks going to be a list of every single ewok that the program including
-        ewoksList=new ArrayList<>();
+        //ewoksList=new ArrayList<>();
+    }
+    public void init(int num)
+    {
+        ewoksarr= new Ewok[num];
     }
 
     public static Ewoks getInstance(){

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2f33b589-8a14-4646-9e2b-01dc7ec1cae1" name="Default Changelist" comment="" />
+    <list default="true" id="2f33b589-8a14-4646-9e2b-01dc7ec1cae1" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assignment2-SPL/src/main/java/bgu/spl/mics/application/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment2-SPL/src/main/java/bgu/spl/mics/application/Main.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,6 +22,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.build.tools" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -32,5 +36,30 @@
       <updated>1606910297332</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1607261300484">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1607261300484" />
+    <state x="689" y="310" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1607261163265">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="689" y="310" key="#com.intellij.ide.util.TreeClassChooserDialog/1920.1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1607261163265" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1607261403101">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="275" key="FileChooserDialogImpl/1920.1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1607261403101" />
+    <state x="461" y="165" key="SettingsEditor" timestamp="1607260869470">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="461" y="165" key="SettingsEditor/1920.1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1607260869470" />
+    <state x="342" y="140" key="new project wizard" timestamp="1607260967920">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="342" y="140" key="new project wizard/1920.1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1607260967920" />
   </component>
 </project>

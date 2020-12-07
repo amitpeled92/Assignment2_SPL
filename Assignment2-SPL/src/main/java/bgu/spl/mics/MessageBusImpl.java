@@ -11,7 +11,7 @@ import java.util.Queue;
  */
 public class MessageBusImpl implements MessageBus {
 	private static MessageBusImpl messageBusInstance = null;
-	private HashMap<MicroService,Queue<Message>> hashMap;
+	private HashMap<MicroService,Queue<?extends Message>> hashMap;
 
 	private MessageBusImpl(){
 
@@ -25,35 +25,53 @@ public class MessageBusImpl implements MessageBus {
 	
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		
+		Queue<type> q= new LinkedList<>();
+		hashMap.put(m, (Queue<? extends Message>) q);
 	}
 
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-		
+		Queue<type> q= new LinkedList<>();
+		hashMap.put(m, (Queue<? extends Message>) q);
     }
 
 	@Override @SuppressWarnings("unchecked")
 	public <T> void complete(Event<T> e, T result) {
-		
+		Future<T> future= new Future<T>();
+		future.resolve(result);
+		//need to connect e with future
+
 	}
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
-		
+		for (Queue<? extends Message> q:hashMap.values())
+		{
+			if(q.getClass()==b.getClass())
+			{
+				q.add(b);
+			}
+		}
 	}
 
 	
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
-		
-        return null;
+		Future<T> future= new Future<T>();
+		for (Queue<? extends Message> q:hashMap.values())
+		{
+			if(q.getClass()==e.getClass())
+			{
+				q.add(e);
+			}
+		}
+		return future;
 	}
 
 	@Override
 	public void register(MicroService m) {
 		if(hashMap == null)
-			hashMap = new HashMap<MicroService,Queue<Message>>();
+			hashMap = new HashMap<MicroService,Queue<?extends Message>>();
 		Queue<Message> qOfMicroservice = new LinkedList<>();
 		hashMap.put(m,qOfMicroservice);
 	}
