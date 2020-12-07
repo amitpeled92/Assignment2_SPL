@@ -3,6 +3,7 @@ package bgu.spl.mics;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -14,10 +15,10 @@ public class MessageBusImpl implements MessageBus {
 		//this is thread-safe singleton
 		private static MessageBusImpl messageBusInstance = new MessageBusImpl();
 	}
-	private HashMap<MicroService,Queue<Message>> hashMap;
+	private ConcurrentHashMap<MicroService,Queue<Message>> hashMap;
 
 	private MessageBusImpl(){
-
+		hashMap = new ConcurrentHashMap<MicroService,Queue<Message>>();
 	}
 
 	public static MessageBusImpl getInstance(){
@@ -54,7 +55,7 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public void register(MicroService m) {
 		if(hashMap == null)
-			hashMap = new HashMap<MicroService,Queue<Message>>();
+			hashMap = new ConcurrentHashMap<MicroService,Queue<Message>>();
 		Queue<Message> qOfMicroservice = new LinkedList<>();
 		hashMap.put(m,qOfMicroservice);
 	}
