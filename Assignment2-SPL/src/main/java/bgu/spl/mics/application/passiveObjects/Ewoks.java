@@ -12,7 +12,10 @@ import java.util.ArrayList;
  * You can add ONLY private methods and fields to this class.
  */
 public class Ewoks {
-    private static Ewoks ewoksInstance = null;
+    private static class EwoksSingletonHolder {
+        //this is thread-safe singleton
+        private static Ewoks ewoksInstance = new Ewoks();
+    }
     private ArrayList<Ewok> ewoksList;
 
     /**
@@ -24,8 +27,6 @@ public class Ewoks {
     }
 
     public static Ewoks getInstance(){
-        if(ewoksInstance == null)
-            ewoksInstance=new Ewoks();
-        return ewoksInstance;
+        return EwoksSingletonHolder.ewoksInstance;
     }
 }

@@ -10,7 +10,10 @@ import java.util.Queue;
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl implements MessageBus {
-	private static MessageBusImpl messageBusInstance = null;
+	private static class MessageBusSingletonHolder{
+		//this is thread-safe singleton
+		private static MessageBusImpl messageBusInstance = new MessageBusImpl();
+	}
 	private HashMap<MicroService,Queue<Message>> hashMap;
 
 	private MessageBusImpl(){
@@ -18,9 +21,7 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	public static MessageBusImpl getInstance(){
-		if(messageBusInstance == null)
-			messageBusInstance = new MessageBusImpl();
-		return messageBusInstance;
+		return MessageBusSingletonHolder.messageBusInstance;
 	}
 	
 	@Override
