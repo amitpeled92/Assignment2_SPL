@@ -12,9 +12,11 @@ import java.util.Queue;
 public class MessageBusImpl implements MessageBus {
 	private static MessageBusImpl messageBusInstance = null;
 	private HashMap<MicroService,Queue<?extends Message>> hashMap;
+	private String messageLoopMannerName;
 
 	private MessageBusImpl(){
-
+		hashMap = new HashMap<>();
+		messageLoopMannerName=null;
 	}
 
 	public static MessageBusImpl getInstance(){
@@ -45,10 +47,12 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
+		boolean check= true;
 		for (Queue<? extends Message> q:hashMap.values())
 		{
 			if(q.getClass()==b.getClass())
 			{
+				check= false;
 				q.add(b);
 			}
 		}
@@ -58,20 +62,26 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
 		Future<T> future= new Future<T>();
+		boolean check= true;
+		int events=-1;
+		Queue<? extends Message> currq= null;
 		for (Queue<? extends Message> q:hashMap.values())
 		{
-			if(q.getClass()==e.getClass())
+			if(q.getClass()==e.getClass()&&check)
 			{
-				q.add(e);
+				//not robin manner temp action
+				if(events==-1||events>q.size()) {
+					events= q.size();
+					currq=q;
+				}
 			}
 		}
+		currq.add(e);
 		return future;
 	}
 
 	@Override
 	public void register(MicroService m) {
-		if(hashMap == null)
-			hashMap = new HashMap<MicroService,Queue<?extends Message>>();
 		Queue<Message> qOfMicroservice = new LinkedList<>();
 		hashMap.put(m,qOfMicroservice);
 	}
@@ -85,7 +95,33 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
-		
-		return null;
+		Queue<? extends Message> q= hashMap.get(m);
+		while (q.isEmpty())
+		{
+			try {
+				wait();
+			}
+			catch (InterruptedException e)
+			{
+
+			}
+		}
+		Message message=q.poll();
+		notifyAll();
+		return message;
+	}
+	public String messageLoopMannerCheck(){
+		if(messageLoopMannerName == null){
+			messageLoopMannerName = "HanSolo";
+			return messageLoopMannerName; //HanSolo will handle the event this time
+		}
+		else if(messageLoopMannerName.equals("HanSolo")){
+			messageLoopMannerName = "C3PO";
+			return messageLoopMannerName; //C3PO will handle the event this time
+		}
+		else{
+			messageLoopMannerName = "HanSolo";
+			return messageLoopMannerName; //HanSolo will handle the event this time
+		}
 	}
 }
