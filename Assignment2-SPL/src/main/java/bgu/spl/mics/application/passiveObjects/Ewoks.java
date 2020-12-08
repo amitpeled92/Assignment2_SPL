@@ -27,7 +27,11 @@ public class Ewoks {
     }
     public void init(int num)
     {
-        ewoksarr= new Ewok[num];
+        ewoksArr= new Ewok[num];
+        for (int i=0;i<num;i++)
+        {
+            ewoksArr[i]= new Ewok();
+        }
     }
 
     public static Ewoks getInstance(){

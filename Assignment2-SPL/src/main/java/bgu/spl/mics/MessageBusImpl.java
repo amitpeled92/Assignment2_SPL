@@ -33,9 +33,8 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		Queue<? extends type> q = new LinkedList<>();
-		LinkedList<? extends Message> q = new LinkedList<>();
-		hashMap.put(m,q);
+		Queue<type> q = new LinkedList<>();
+		hashMap.put(m, (Queue<Message>) q);
 	}
 
 	@Override
@@ -54,7 +53,7 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
-		for (Queue<? extends Message> q:hashMap.values())
+		for (Queue<Message> q:hashMap.values())
 		{
 			if(q.getClass() == b.getClass())
 			{
