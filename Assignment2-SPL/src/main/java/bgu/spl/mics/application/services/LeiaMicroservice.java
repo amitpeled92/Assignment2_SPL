@@ -28,7 +28,7 @@ public class LeiaMicroservice extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeEvent(GettingStartedEvent.class, c -> {});
-        this.subscribeBroadcast(GettingStartedEvent.class, c -> {});
+       // this.subscribeBroadcast(GettingStartedEvent.class, c -> {});
     }
 
     @Override

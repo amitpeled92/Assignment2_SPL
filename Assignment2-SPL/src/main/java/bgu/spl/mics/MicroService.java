@@ -3,6 +3,7 @@ package bgu.spl.mics;
 import bgu.spl.mics.application.messages.FinishEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -30,7 +31,7 @@ public abstract class MicroService implements Runnable, Callback {
     protected MessageBusImpl messageBus;
     private String msName;
     private String messageLoopMannerName;
-    private Queue<String> callbackQueue;
+    private HashMap<Message,Callback> callbackHashMap;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -40,7 +41,8 @@ public abstract class MicroService implements Runnable, Callback {
         messageBus = MessageBusImpl.getInstance();
         msName = name;
         messageLoopMannerName = null;
-        callbackQueue = new LinkedList<>();
+        callbackHashMap= new HashMap<>();
+       // callbackQueue = new LinkedList<>();
         //initialize();
     }
 
@@ -189,9 +191,14 @@ public abstract class MicroService implements Runnable, Callback {
     public final void run() {
         messageBus.register(this);
         initialize();
-        while (!callbackQueue.isEmpty()) {
-            call(callbackQueue.remove());
-        } //end while
+        try
+        {
+            Message m= messageBus.awaitMessage(this);
+            callbackHashMap.get(m).call(m);
+        }
+        catch (InterruptedException e) {
+
+        }
         messageBus.unregister(this);
     }
 

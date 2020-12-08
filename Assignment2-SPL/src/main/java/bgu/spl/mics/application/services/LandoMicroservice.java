@@ -19,7 +19,7 @@ public class LandoMicroservice  extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeEvent(BombDestroyerEvent.class, c -> {});
-        this.subscribeBroadcast(BombDestroyerEvent.class, c -> {});
+    //    this.subscribeBroadcast(BombDestroyerEvent.class, c -> {});
     }
 
     @Override

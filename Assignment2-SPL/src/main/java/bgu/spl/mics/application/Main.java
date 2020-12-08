@@ -32,6 +32,12 @@ public class Main {
 			LandoMicroservice LandoMicroservice= new LandoMicroservice(lando);
 			Ewoks ewoks= Ewoks.getInstance();
 			ewoks.init(input.getEwoks());
+			Thread[] threads= new Thread[5];
+			threads[0]= new Thread(leiaMicroservice);
+			threads[1]= new Thread(r2D2Microservice);
+			threads[2]= new Thread(hanSoloMicroservice);
+			threads[3]= new Thread(c3POMicroservice);
+			threads[4]= new Thread(LandoMicroservice);
 		}
 		catch (Exception e)
 		{

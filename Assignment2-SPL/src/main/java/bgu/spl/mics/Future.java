@@ -36,14 +36,13 @@ public class Future<T> {
 
 			try
 			{
-				//wait();
-
+				wait();
 			}
 			catch (Exception e)
 			{
 			}
 		}
-		//notifyAll();
+		notifyAll();
 		return result;
 	}
 	
@@ -84,8 +83,10 @@ public class Future<T> {
 			{
 			}
 			if (isDone)
+				notifyAll();
 				return result;
 		}
+		notifyAll();
 		return null;
 	}
 }

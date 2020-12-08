@@ -24,7 +24,7 @@ public class HanSoloMicroservice extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeEvent(AttackEvent.class, c -> {});
-        this.subscribeBroadcast(AttackEvent.class, c -> {});
+    //    this.subscribeBroadcast(AttackEvent.class, c -> {});
     }
 
     @Override

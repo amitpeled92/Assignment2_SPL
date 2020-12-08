@@ -23,7 +23,7 @@ public class R2D2Microservice extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeEvent(DeactivationEvent.class, c -> {});
-        this.subscribeBroadcast(DeactivationEvent.class, c -> {});
+       // this.subscribeBroadcast(DeactivationEvent.class, c -> {});
     }
 
     @Override
