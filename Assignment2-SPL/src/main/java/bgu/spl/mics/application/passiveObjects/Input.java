@@ -25,7 +25,10 @@ public class Input {
         R2D2 = r2d2;
     }
     public Attack[] getAttacks() {
-        return attacks;
+      //  for (int i=0;i<attacks.length;i++) {
+        //    attacks[i]= new Attack(attacks[i].serials,attacks[i].duration);
+        //}
+        return this.attacks;
     }
     public void setAttacks(Attack[] attacks) {
         this.attacks = attacks;

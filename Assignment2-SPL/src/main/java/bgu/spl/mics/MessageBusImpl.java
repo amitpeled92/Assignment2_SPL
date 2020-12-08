@@ -1,5 +1,9 @@
 package bgu.spl.mics;
 
+import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.services.C3POMicroservice;
+import bgu.spl.mics.application.services.HanSoloMicroservice;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -24,17 +28,18 @@ public class MessageBusImpl implements MessageBus {
 			messageBusInstance = new MessageBusImpl();
 		return messageBusInstance;
 	}
-	
+
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		Queue<type> q= new LinkedList<>();
-		hashMap.put(m, (Queue<? extends Message>) q);
+		Queue<? extends type> q= new LinkedList<>();
+		LinkedList<? extends Message> q= new LinkedList<>();
+		hashMap.put(m,q);
 	}
 
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
 		Queue<type> q= new LinkedList<>();
-		hashMap.put(m, (Queue<? extends Message>) q);
+		hashMap.put(m, q);
     }
 
 	@Override @SuppressWarnings("unchecked")
@@ -47,12 +52,10 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
-		boolean check= true;
 		for (Queue<? extends Message> q:hashMap.values())
 		{
 			if(q.getClass()==b.getClass())
 			{
-				check= false;
 				q.add(b);
 			}
 		}
@@ -62,21 +65,25 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
 		Future<T> future= new Future<T>();
-		boolean check= true;
-		int events=-1;
-		Queue<? extends Message> currq= null;
-		for (Queue<? extends Message> q:hashMap.values())
+
+		for (MicroService m:hashMap.keySet())
 		{
-			if(q.getClass()==e.getClass()&&check)
+
+			if(hashMap.get(m).getClass()==e.getClass())
 			{
-				//not robin manner temp action
-				if(events==-1||events>q.size()) {
-					events= q.size();
-					currq=q;
+				if (e.getClass()== AttackEvent.class)
+				{
+					String str= messageLoopMannerCheck();
+					if (str.equals(m.getName()))
+					{
+						hashMap.get(m).add(e);
+					}
+				}
+				else {
+					hashMap.get(m).add(e);
 				}
 			}
 		}
-		currq.add(e);
 		return future;
 	}
 
@@ -111,17 +118,40 @@ public class MessageBusImpl implements MessageBus {
 		return message;
 	}
 	public String messageLoopMannerCheck(){
-		if(messageLoopMannerName == null){
+		boolean solo= false;
+		boolean c3=false;
+		for (MicroService m: hashMap.keySet()) {
+			if (m.getName().equals("HanSolo")) {
+				solo= true;
+			}
+			if(m.getName().equals("C3PO"))
+			{
+				c3= true;
+			}
+		}
+		if(solo && c3) {
+			if (messageLoopMannerName == null) {
+				messageLoopMannerName = "HanSolo";
+				return messageLoopMannerName; //HanSolo will handle the event this time
+			} else if (messageLoopMannerName.equals("HanSolo")) {
+				messageLoopMannerName = "C3PO";
+				return messageLoopMannerName; //C3PO will handle the event this time
+			} else {
+				messageLoopMannerName = "HanSolo";
+				return messageLoopMannerName; //HanSolo will handle the event this time
+			}
+		}
+		else if(solo)
+		{
 			messageLoopMannerName = "HanSolo";
 			return messageLoopMannerName; //HanSolo will handle the event this time
 		}
-		else if(messageLoopMannerName.equals("HanSolo")){
+		else if(c3)
+		{
 			messageLoopMannerName = "C3PO";
 			return messageLoopMannerName; //C3PO will handle the event this time
 		}
-		else{
-			messageLoopMannerName = "HanSolo";
-			return messageLoopMannerName; //HanSolo will handle the event this time
-		}
+		else
+			return null ;
 	}
 }

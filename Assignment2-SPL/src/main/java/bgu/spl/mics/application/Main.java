@@ -22,9 +22,8 @@ public class Main {
 			try (Reader reader = new FileReader(args[0])) {
 				input =gson.fromJson(reader, Input.class);
 			}
-			System.out.println(input);//need to check i cant run it;
 			Attack[] attacks= input.getAttacks();
-			LeiaMicroservice leiaMicroservice = new LeiaMicroservice(attacks);//need to check efficency of this way;
+			LeiaMicroservice leiaMicroservice = new LeiaMicroservice(attacks);
 			long r2= input.getR2D2();
 			R2D2Microservice r2D2Microservice= new R2D2Microservice(r2);
 			HanSoloMicroservice hanSoloMicroservice= new HanSoloMicroservice();

@@ -20,7 +20,7 @@ class MessageBusImplTest {
 
     @BeforeEach
     void setUp() {
-        msgBus = new MessageBusImpl();
+        msgBus = MessageBusImpl.getInstance();
         attackEventCheck = new AttackEvent();
         //MicroServices:
         hanSolo = new HanSoloMicroservice();
@@ -38,8 +38,7 @@ class MessageBusImplTest {
 //        attackEventCheck = new AttackEvent();
         msgBus.register(hanSolo);
         msgBus.subscribeEvent(AttackEvent.class, hanSolo);
-        MicroService m = msgBus.microServiceQueue.peek();
-        assertEquals(m,hanSolo);
+        assertTrue(msgBus.hashMap.containsKey(hanSolo));
     }
 
     @Test
@@ -47,8 +46,8 @@ class MessageBusImplTest {
         //hanSolo = new HanSoloMicroservice();
         msgBus.register(hanSolo);
         msgBus.subscribeBroadcast(AttackEvent.class, hanSolo);
-        MicroService m = msgBus.microServiceQueue.peek();
-        assertEquals(m,hanSolo);
+        msgBus.subscribeEvent(AttackEvent.class, hanSolo);
+        assertTrue(msgBus.hashMap.containsKey(hanSolo));
     }
 
     @Test
@@ -106,7 +105,7 @@ class MessageBusImplTest {
     void register() {
         //hanSolo = new HanSoloMicroservice();
         msgBus.register(hanSolo);
-        assertEquals(msgBus.microServiceQueue.peek(), hanSolo);
+        assertTrue(msgBus.hashMap.containsKey(hanSolo));
     }
 
     @Test

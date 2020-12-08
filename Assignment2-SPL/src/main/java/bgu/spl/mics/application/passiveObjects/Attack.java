@@ -20,4 +20,12 @@ public class Attack {
         this.serials = serialNumbers;
         this.duration = duration;
     }
+
+    @Override
+    public String toString() {
+        return "Attack{" +
+                "serials=" + serials +
+                ", duration=" + duration +
+                '}';
+    }
 }
