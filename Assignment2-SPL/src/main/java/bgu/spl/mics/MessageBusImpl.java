@@ -7,6 +7,7 @@ import bgu.spl.mics.application.services.HanSoloMicroservice;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -14,25 +15,26 @@ import java.util.Queue;
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl implements MessageBus {
-	private static MessageBusImpl messageBusInstance = null;
-	private HashMap<MicroService,Queue<?extends Message>> hashMap;
+	private static class MessageBusSingletonHolder{
+		//this is thread-safe singleton
+		private static MessageBusImpl messageBusInstance = new MessageBusImpl();
+	}
+	private ConcurrentHashMap<MicroService,Queue<Message>> hashMap;
 	private String messageLoopMannerName;
 
 	private MessageBusImpl(){
-		hashMap = new HashMap<>();
-		messageLoopMannerName=null;
+		hashMap = new ConcurrentHashMap<MicroService,Queue<Message>>();
+		messageLoopMannerName = null;
 	}
 
 	public static MessageBusImpl getInstance(){
-		if(messageBusInstance == null)
-			messageBusInstance = new MessageBusImpl();
-		return messageBusInstance;
+		return MessageBusSingletonHolder.messageBusInstance;
 	}
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		Queue<? extends type> q= new LinkedList<>();
-		LinkedList<? extends Message> q= new LinkedList<>();
+		Queue<? extends type> q = new LinkedList<>();
+		LinkedList<? extends Message> q = new LinkedList<>();
 		hashMap.put(m,q);
 	}
 
@@ -54,7 +56,7 @@ public class MessageBusImpl implements MessageBus {
 	public void sendBroadcast(Broadcast b) {
 		for (Queue<? extends Message> q:hashMap.values())
 		{
-			if(q.getClass()==b.getClass())
+			if(q.getClass() == b.getClass())
 			{
 				q.add(b);
 			}
@@ -69,7 +71,7 @@ public class MessageBusImpl implements MessageBus {
 		for (MicroService m:hashMap.keySet())
 		{
 
-			if(hashMap.get(m).getClass()==e.getClass())
+			if(hashMap.get(m).getClass() == e.getClass())
 			{
 				if (e.getClass()== AttackEvent.class)
 				{
@@ -152,6 +154,6 @@ public class MessageBusImpl implements MessageBus {
 			return messageLoopMannerName; //C3PO will handle the event this time
 		}
 		else
-			return null ;
+			return null;
 	}
 }

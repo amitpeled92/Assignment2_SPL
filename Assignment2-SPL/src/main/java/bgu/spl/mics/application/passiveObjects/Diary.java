@@ -8,7 +8,10 @@ package bgu.spl.mics.application.passiveObjects;
  * Do not add to this class nothing but a single constructor, getters and setters.
  */
 public class Diary {
-    private static Diary diaryInstance = null;
+    private static class DairySingletonHolder {
+        //this is thread-safe singleton
+        private static Diary diaryInstance = new Diary();
+    }
     private String output;
 
     /**
@@ -19,9 +22,7 @@ public class Diary {
     }
 
     public static Diary getInstance(){
-        if(diaryInstance==null)
-            diaryInstance = new Diary();
-        return diaryInstance;
+        return DairySingletonHolder.diaryInstance;
     }
 
     /**
