@@ -7,6 +7,9 @@ package bgu.spl.mics.application.passiveObjects;
  * You may add fields and methods to this class as you see fit (including public methods).
  */
 public class Ewok {
+	/**
+	 * this class was build as a Semaphore
+	 */
 	int serialNumber;
 	boolean available;
 	int counter;
@@ -20,14 +23,23 @@ public class Ewok {
     /**
      * Acquires an Ewok
      */
-    public void acquire() {
-		available = true;
+    public synchronized void acquire() {
+		while(available==false){
+			try {
+				wait();
+			}
+			catch (InterruptedException e){}
+		}
+    	available = true;
     }
 
     /**
      * release an Ewok
      */
     public void release() {
-    	available = false;
+    	if(available==true){
+    		available = false;
+    		notifyAll();
+		}
     }
 }
