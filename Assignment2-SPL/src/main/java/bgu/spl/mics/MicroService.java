@@ -2,7 +2,6 @@ package bgu.spl.mics;
 
 import bgu.spl.mics.application.messages.FinishBroadcast;
 import bgu.spl.mics.application.messages.FinishEvent;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -27,7 +26,7 @@ import java.util.concurrent.PriorityBlockingQueue;
  * Only private fields and methods may be added to this class.
  * <p>
  */
-public abstract class MicroService implements Runnable, Callback {
+public abstract class MicroService implements Runnable {
 
     protected MessageBusImpl messageBus;
     private String msName;
@@ -194,27 +193,15 @@ public abstract class MicroService implements Runnable, Callback {
     public final void run() {
         messageBus.register(this);
         initialize();
-        while (!finishrun)
-        try
-        {
-            Message m= messageBus.awaitMessage(this);
-            callbackHashMap.get(m).call(m);
+        while (!finishrun) {
+            try
+            {
+                Message m = messageBus.awaitMessage(this);
+                callbackHashMap.get(m.getClass()).call(m);
+            }
+            catch (InterruptedException ignored) {}
         }
-        catch (InterruptedException ignored) {}
         messageBus.unregister(this);
     }
-
-    /**
-     * this method called once a microservice needs to create a callback to an event
-     * @param c is the event/message that the microservice works with to create the callback
-     */
-    public abstract void call(Object c);
-
-    /**
-     * in our program there are only 2 microservices the can get the same type of events - HanSolo & C3PO.
-     * therefore, every time this method called, it checks which of these 2 microservice will get the current event
-     * to handle at that point of time.
-     * @return a String of the name of the microservice that the event will be added to its queue
-     */
 
 }

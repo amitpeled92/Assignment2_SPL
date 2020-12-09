@@ -1,12 +1,18 @@
 package bgu.spl.mics;
 
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.FinishBroadcast;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.services.HanSoloMicroservice;
 import bgu.spl.mics.application.services.LeiaMicroservice;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import javax.swing.table.AbstractTableModel;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,7 +27,11 @@ class MessageBusImplTest {
     @BeforeEach
     void setUp() {
         msgBus = MessageBusImpl.getInstance();
-        attackEventCheck = new AttackEvent();
+        List<Integer> serialNumbers= new LinkedList<>();
+        serialNumbers.add(1);
+        int duration=1;
+        Attack a= new Attack(serialNumbers,duration);
+        attackEventCheck = new AttackEvent(a);
         //MicroServices:
         hanSolo = new HanSoloMicroservice();
         Attack[] attacks = new Attack[1];
@@ -38,16 +48,16 @@ class MessageBusImplTest {
 //        attackEventCheck = new AttackEvent();
         msgBus.register(hanSolo);
         msgBus.subscribeEvent(AttackEvent.class, hanSolo);
-        assertTrue(msgBus.hashMap.containsKey(hanSolo));
+        assertTrue(msgBus.hashMapmessages.containsKey(hanSolo));
     }
 
     @Test
     void subscribeBroadcast() {
         //hanSolo = new HanSoloMicroservice();
         msgBus.register(hanSolo);
-        msgBus.subscribeBroadcast(AttackEvent.class, hanSolo);
+        msgBus.subscribeBroadcast(FinishBroadcast.class, hanSolo);
         msgBus.subscribeEvent(AttackEvent.class, hanSolo);
-        assertTrue(msgBus.hashMap.containsKey(hanSolo));
+        assertTrue(msgBus.hashMapmessages.containsKey(hanSolo));
     }
 
     @Test
@@ -69,9 +79,9 @@ class MessageBusImplTest {
     @Test
     void sendBroadcast() {
         //hanSolo = new HanSoloMicroservice();
-        Broadcast attackEventCheckb = new AttackEvent();
+        Broadcast attackEventCheckb = new FinishBroadcast();
         msgBus.register(hanSolo);
-        msgBus.subscribeBroadcast(AttackEvent.class,hanSolo);
+        msgBus.subscribeBroadcast(FinishBroadcast.class,hanSolo);
         msgBus.sendBroadcast(/*(Broadcast)*/ attackEventCheckb);
         try {
             AttackEvent attackEventNew = (AttackEvent) msgBus.awaitMessage(hanSolo);
@@ -105,7 +115,7 @@ class MessageBusImplTest {
     void register() {
         //hanSolo = new HanSoloMicroservice();
         msgBus.register(hanSolo);
-        assertTrue(msgBus.hashMap.containsKey(hanSolo));
+        assertTrue(msgBus.hashMapmessages.containsKey(hanSolo));
     }
 
     @Test

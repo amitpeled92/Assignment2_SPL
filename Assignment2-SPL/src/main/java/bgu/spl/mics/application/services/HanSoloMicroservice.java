@@ -42,31 +42,29 @@ public class HanSoloMicroservice extends MicroService {
                             try {
                                 checkavailable = false;
                                 ewoks.wait();
-                            } catch (InterruptedException e) {
-                            }
+                            } catch (InterruptedException e) {}
                         }
                     }
                     if (checkavailable) {
                         endwait = false;
-                    }
-                    else
-                    {
-                        checkavailable=true;
+                    } else {
+                        checkavailable = true;
                     }
                 }
-                for (Integer integer : attack.getSerials()) {
-                    Ewoks.getEwoksArr()[integer].acquire();
-                }
-                Thread.currentThread().notifyAll();
+            }
+            for (Integer integer : attack.getSerials()) {
+                Ewoks.getEwoksArr()[integer].acquire();
+                ewoks.notifyAll();
             }
             try {
-                Thread.currentThread().sleep(attack.getDuration());
+                Thread.sleep(attack.getDuration());
                 for (Integer integer : attack.getSerials()) {
                     Ewoks.getEwoksArr()[integer].release();
+                    ewoks.notifyAll();
                 }
                 this.complete(c,true);
                 Diary.getInstance().setTotalAttacks(Diary.getInstance().getTotalAttacks()+1);
-                Thread.currentThread().notifyAll();
+                messageBus.getHashMapmessages().notifyAll();
             }
             catch (Exception e){}
         });
@@ -80,11 +78,4 @@ public class HanSoloMicroservice extends MicroService {
     }
 
 
-    @Override
-    public void call(Object c) {
-//        if(messageBus.hashmap.at(i).isEmpty()) {
-//            Event<Boolean> d1Event = new DeactivationEvent();
-//            messageBus.sendEvent(d1Event);
-//        }
-    }
 }

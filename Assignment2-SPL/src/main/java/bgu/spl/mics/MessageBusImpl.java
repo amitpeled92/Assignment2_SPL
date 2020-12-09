@@ -21,7 +21,7 @@ public class MessageBusImpl implements MessageBus {
 		//this is thread-safe singleton
 		private static MessageBusImpl messageBusInstance = new MessageBusImpl();
 	}
-	private ConcurrentHashMap<MicroService,Queue<Message>> hashMapmessages;
+	protected ConcurrentHashMap<MicroService,Queue<Message>> hashMapmessages;
 	private ConcurrentHashMap<Class<?>,Queue<MicroService>> hashMapofmicroservices;
 	private ConcurrentHashMap<Event,Future> hashMapfuture;
 
@@ -34,6 +34,10 @@ public class MessageBusImpl implements MessageBus {
 
 	public static MessageBusImpl getInstance(){
 		return MessageBusSingletonHolder.messageBusInstance;
+	}
+
+	public ConcurrentHashMap<MicroService, Queue<Message>> getHashMapmessages() {
+		return hashMapmessages;
 	}
 
 	@Override
@@ -100,9 +104,9 @@ public class MessageBusImpl implements MessageBus {
 					MicroService m = hashMapofmicroservices.get(c).poll();
 					hashMapmessages.get(m).add(e);
 					hashMapofmicroservices.get(c).add(m);
+					hashMapmessages.notifyAll();
 				}
 			}
-			hashMapmessages.notifyAll();
 		}
 		hashMapfuture.put(e,future);
 		return future;
@@ -138,12 +142,12 @@ public class MessageBusImpl implements MessageBus {
 			while (q.isEmpty()) {
 				try {
 					hashMapmessages.wait();
+					q = hashMapmessages.get(m);
 				} catch (InterruptedException e) {
 
 				}
 			}
 			Message message = q.poll();
-			hashMapmessages.notifyAll();
 			return message;
 		}
 	}

@@ -28,7 +28,7 @@ public class R2D2Microservice extends MicroService {
         this.subscribeEvent(DeactivationEvent.class, c -> {
             try {
                 Thread.currentThread().sleep(dur);
-                Thread.currentThread().notifyAll();
+                messageBus.getHashMapmessages().notifyAll();
                 this.sendEvent(new BombDestroyerEvent());
             }
             catch (Exception e){}
@@ -39,14 +39,5 @@ public class R2D2Microservice extends MicroService {
             Diary.getInstance().setR2D2Terminate(System.currentTimeMillis());
             finishrun=true;
         });
-    }
-
-    @Override
-    public void call(Object c) {
-//        if(messageBus.hashmap.at(i).size() == 2) //r2d2 queue size = 2{
-            //TODO: Adding "HanSolo and C3PO finished their tasks in {time} milliseconds one after the other. to Diary"
-//            Event<Boolean> bdEvent = new BombDestroyerEvent();
-//            messageBus.sendEvent(bdEvent);
-//        }
     }
 }

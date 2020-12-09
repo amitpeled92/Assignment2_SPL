@@ -32,13 +32,4 @@ public class LandoMicroservice  extends MicroService {
             finishrun=true;
         });
     }
-
-    @Override
-    public void call(Object c) {
-//        if(messageBus.hashmap.isEmpty().at(i) != null) {
-//            Event<Boolean> finishEvent = new FinishEvent();
-//            messageBus.sendEvent(finishEvent);
-//        }
-        //TODO: Adding "All threads terminated {time} milliseconds after the program finished. to Diary"
-    }
 }
