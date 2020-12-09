@@ -68,6 +68,7 @@ public class HanSoloMicroservice extends MicroService {
                 }
                 this.complete(c,true);
                 Diary.getInstance().setTotalAttacks(Diary.getInstance().getTotalAttacks()+1);
+                Diary.getInstance().setHanSoloFinish(System.currentTimeMillis());
                 messageBus.getHashMapmessages().notifyAll();
             }
             catch (Exception e){}

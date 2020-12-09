@@ -14,50 +14,54 @@ import java.util.concurrent.atomic.AtomicInteger;
  * create the different components of the application, and run the system.
  * In the end, you should output a JSON.
  */
-public class Main {
-	public static void main(String[] args) {
+public class Main
+{
+
+	public static void main(String[] args)
+	{
 		//Need to convert the JSON input into Leia's Attack array
+
+
 		try {
 			Input input;
 			Gson gson = new Gson();
 			try (Reader reader = new FileReader(args[0])) {
-				input =gson.fromJson(reader, Input.class);
+				input = gson.fromJson(reader, Input.class);
 			}
-			Attack[] attacks= input.getAttacks();
+			Attack[] attacks = input.getAttacks();
 			LeiaMicroservice leiaMicroservice = new LeiaMicroservice(attacks);
-			long r2= input.getR2D2();
-			R2D2Microservice r2D2Microservice= new R2D2Microservice(r2);
-			HanSoloMicroservice hanSoloMicroservice= new HanSoloMicroservice();
-			C3POMicroservice c3POMicroservice= new C3POMicroservice();
-			long lando= input.getLando();
-			LandoMicroservice LandoMicroservice= new LandoMicroservice(lando);
-			Ewoks ewoks= Ewoks.getInstance();
+			long r2 = input.getR2D2();
+			R2D2Microservice r2D2Microservice = new R2D2Microservice(r2);
+			HanSoloMicroservice hanSoloMicroservice = new HanSoloMicroservice();
+			C3POMicroservice c3POMicroservice = new C3POMicroservice();
+			long lando = input.getLando();
+			LandoMicroservice LandoMicroservice = new LandoMicroservice(lando);
+			Ewoks ewoks = Ewoks.getInstance();
 			ewoks.init(input.getEwoks());
-			Diary diary= Diary.getInstance();
+			Diary diary = Diary.getInstance();
 			diary.setTotalAttacks(0);
-			Thread[] threads= new Thread[5];
-			threads[0]= new Thread(leiaMicroservice);
-			threads[1]= new Thread(hanSoloMicroservice);
-			threads[2]= new Thread(c3POMicroservice);
-			threads[3]= new Thread(r2D2Microservice);
-			threads[4]= new Thread(LandoMicroservice);
-			for (Thread t:threads)
-			{
+			Thread[] threads = new Thread[5];
+			threads[0] = new Thread(leiaMicroservice);
+			threads[1] = new Thread(hanSoloMicroservice);
+			threads[2] = new Thread(c3POMicroservice);
+			threads[3] = new Thread(r2D2Microservice);
+			threads[4] = new Thread(LandoMicroservice);
+			for (Thread t : threads) {
 				t.start();
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 
 		}
+		Object lock= new Object();
 		System.out.println("end run");
 		//Create JSON output from Dairy instance (Dairy is a singleton)
-		try {
+		try { //TODO: Need to make sure output is working
+			Thread.currentThread().wait();
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			FileWriter writer = new FileWriter(args[1]);
-			Diary diary= Diary.getInstance();
+			Diary diary = Diary.getInstance();
 			System.out.println(1);
-			gson.toJson(diary,writer);
+			gson.toJson(diary, writer);
 			System.out.println(2);
 
 			writer.flush();
@@ -67,10 +71,11 @@ public class Main {
 			System.out.println(4);
 
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			System.out.println("end exception");
 
 		}
 	}
+
 }
+

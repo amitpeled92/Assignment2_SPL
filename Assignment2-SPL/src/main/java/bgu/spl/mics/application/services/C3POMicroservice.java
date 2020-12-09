@@ -61,6 +61,7 @@ public class C3POMicroservice extends MicroService {
                 }
                 this.complete(c,true);
                 Diary.getInstance().setTotalAttacks(Diary.getInstance().getTotalAttacks()+1);
+                Diary.getInstance().setC3POFinish(System.currentTimeMillis());
                 messageBus.getHashMapmessages().notifyAll();
             }
             catch (Exception e){}
