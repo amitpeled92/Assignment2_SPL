@@ -118,6 +118,13 @@ public class MessageBusImpl implements MessageBus {
 		notifyAll();
 		return message;
 	}
+
+	/**
+	 * in our program there are only 2 microservices the can get the same type of events - HanSolo & C3PO.
+	 * therefore, every time this method called, it checks which of these 2 microservice will get the current event
+	 * to handle at that point of time.
+	 * @return a String of the name of the microservice that the event will be added to its queue
+	 */
 	public String messageLoopMannerCheck(){
 		boolean solo= false;
 		boolean c3=false;

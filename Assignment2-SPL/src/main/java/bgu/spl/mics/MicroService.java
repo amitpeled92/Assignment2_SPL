@@ -25,11 +25,10 @@ import java.util.concurrent.PriorityBlockingQueue;
  * Only private fields and methods may be added to this class.
  * <p>
  */
-public abstract class MicroService implements Runnable, Callback {
+public abstract class MicroService implements Runnable {
 
     protected MessageBusImpl messageBus;
     private String msName;
-    private String messageLoopMannerName;
     private Queue<String> callbackQueue;
 
     /**
@@ -39,9 +38,7 @@ public abstract class MicroService implements Runnable, Callback {
     public MicroService(String name) {
         messageBus = MessageBusImpl.getInstance();
         msName = name;
-        messageLoopMannerName = null;
         callbackQueue = new LinkedList<>();
-        //initialize();
     }
 
     /**
@@ -66,10 +63,6 @@ public abstract class MicroService implements Runnable, Callback {
      *                 queue.
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
-//      Queue<E> q = new PriorityBlockingQueue<>();
-//    	messageBus.hashmap.at(i).add(q);
-//    	messageBus.hashmap.at(i).add(callback);
-
         messageBus.subscribeEvent(type, this);
         //callback.call();
     }
@@ -95,10 +88,6 @@ public abstract class MicroService implements Runnable, Callback {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
-//        Queue<B> q = new PriorityBlockingQueue<>();
-//        messageBus.hashmap.at(i).add(q);
-//        messageBus.hashmap.at(i).add(callback);
-
         messageBus.subscribeBroadcast(type,this);
         //callback.call();
     }
@@ -116,16 +105,9 @@ public abstract class MicroService implements Runnable, Callback {
      * 	       			null in case no micro-service has subscribed to {@code e.getClass()}.
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
-    	messageBus.sendEvent(e);
+    	Future<Boolean> f = messageBus.sendEvent(e);
     	//call(new Object());
-
-//    	for(Queue q:hashmap){
-//    	    if(q.getClass() == e.getClass()){
-//    	        Future<T> f = new Future<>();
-//    	        return f;
-//            }
-//        }
-        return null; 
+        return f; //TODO: Need to send the future to the message bus
     }
 
     /**
@@ -137,12 +119,6 @@ public abstract class MicroService implements Runnable, Callback {
     protected final void sendBroadcast(Broadcast b) {
         messageBus.sendBroadcast(b);
         //call(new Object());
-
-//        for(Queue q:hashmap){
-//            if(q.getClass() == b.getClass()){
-//                Future<Boolean> f = new Future<>();
-//            }
-//        }
     }
 
     /**
@@ -193,32 +169,5 @@ public abstract class MicroService implements Runnable, Callback {
             call(callbackQueue.remove());
         } //end while
         messageBus.unregister(this);
-    }
-
-    /**
-     * this method called once a microservice needs to create a callback to an event
-     * @param c is the event/message that the microservice works with to create the callback
-     */
-    public abstract void call(Object c);
-
-    /**
-     * in our program there are only 2 microservices the can get the same type of events - HanSolo & C3PO.
-     * therefore, every time this method called, it checks which of these 2 microservice will get the current event
-     * to handle at that point of time.
-     * @return a String of the name of the microservice that the event will be added to its queue
-     */
-    public String messageLoopMannerCheck(){
-        if(messageLoopMannerName == null){
-            messageLoopMannerName = "HanSolo";
-            return messageLoopMannerName; //HanSolo will handle the event this time
-        }
-        else if(messageLoopMannerName.equals("HanSolo")){
-            messageLoopMannerName = "C3PO";
-            return messageLoopMannerName; //C3PO will handle the event this time
-        }
-        else{
-            messageLoopMannerName = "HanSolo";
-            return messageLoopMannerName; //HanSolo will handle the event this time
-        }
     }
 }
