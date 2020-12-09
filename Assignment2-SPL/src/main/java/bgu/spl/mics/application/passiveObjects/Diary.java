@@ -12,32 +12,71 @@ public class Diary {
         //this is thread-safe singleton
         private static Diary diaryInstance = new Diary();
     }
-    private String output;
+    private int totalAttacks=0;
+    private long HanSoloFinish;
+    private long C3POFinish;
+    private long R2D2Deactivate;
+    private long LeiaTerminate;
+    private long HanSoloTerminate;
+    private long C3POTerminate;
+    private long R2D2Terminate;
+    private long LandoTerminate;
+
+    public void setTotalAttacks(int totalAttacks) {
+        this.totalAttacks = totalAttacks;
+    }
+
+    public void setHanSoloFinish(long hanSoloFinish) {
+        HanSoloFinish = hanSoloFinish;
+    }
+
+    public void setC3POFinish(long c3POFinish) {
+        C3POFinish = c3POFinish;
+    }
+
+    public void setR2D2Deactivate(long r2D2Deactivate) {
+        R2D2Deactivate = r2D2Deactivate;
+    }
+
+    public void setLeiaTerminate(long leiaTerminate) {
+        LeiaTerminate = leiaTerminate;
+    }
+
+    public void setHanSoloTerminate(long hanSoloTerminate) {
+        HanSoloTerminate = hanSoloTerminate;
+    }
+
+    public void setC3POTerminate(long c3POTerminate) {
+        C3POTerminate = c3POTerminate;
+    }
+
+    public void setR2D2Terminate(long r2D2Terminate) {
+        R2D2Terminate = r2D2Terminate;
+    }
+
+    public void setLandoTerminate(long landoTerminate) {
+        LandoTerminate = landoTerminate;
+    }
+
+    public int getTotalAttacks() {
+        return totalAttacks;
+    }
 
     /**
      * creating Diary as a thread safe singleton
      */
-    private Diary(){
-        output="";
-    }
+    private Diary(){}
 
     public static Diary getInstance(){
         return DairySingletonHolder.diaryInstance;
     }
-
     /**
      * getter for output variable
      * @return output
      */
-    public String getOutput(){
-        return output;
-    }
 
     /**
      * setter for output variable
      * @param str is a line which we want to add to Diary's output
      */
-    public void setOutput(String str){
-        output = output + "\nstr";
-    }
 }

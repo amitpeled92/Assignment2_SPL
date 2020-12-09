@@ -23,11 +23,13 @@ public class MessageBusImpl implements MessageBus {
 	}
 	private ConcurrentHashMap<MicroService,Queue<Message>> hashMapmessages;
 	private ConcurrentHashMap<Class<?>,Queue<MicroService>> hashMapofmicroservices;
+	private ConcurrentHashMap<Event,Future> hashMapfuture;
 
 
 	private MessageBusImpl(){
 		hashMapmessages = new ConcurrentHashMap<>();
 		hashMapofmicroservices = new ConcurrentHashMap<>();
+		hashMapfuture= new ConcurrentHashMap<>();
 	}
 
 	public static MessageBusImpl getInstance(){
@@ -70,10 +72,8 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override @SuppressWarnings("unchecked")
 	public <T> void complete(Event<T> e, T result) {
-		Future<T> future= new Future<T>();
+		Future<T> future= hashMapfuture.get(e);
 		future.resolve(result);
-		//need to connect e with future
-
 	}
 
 	@Override
@@ -104,6 +104,7 @@ public class MessageBusImpl implements MessageBus {
 			}
 			hashMapmessages.notifyAll();
 		}
+		hashMapfuture.put(e,future);
 		return future;
 	}
 

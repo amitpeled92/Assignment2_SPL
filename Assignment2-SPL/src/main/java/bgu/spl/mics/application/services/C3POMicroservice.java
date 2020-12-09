@@ -2,9 +2,10 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Event;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.AttackEvent;
-import bgu.spl.mics.application.messages.DeactivationEvent;
-import bgu.spl.mics.application.messages.FinishEvent;
+import bgu.spl.mics.application.messages.*;
+import bgu.spl.mics.application.passiveObjects.Attack;
+import bgu.spl.mics.application.passiveObjects.Diary;
+import bgu.spl.mics.application.passiveObjects.Ewoks;
 
 
 /**
@@ -23,8 +24,49 @@ public class C3POMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-        this.subscribeEvent(AttackEvent.class, c -> {});
-        //this.subscribeBroadcast(AttackEvent.class, c -> {});
+        this.subscribeEvent(AttackEvent.class, c -> {
+            Ewoks ewoks= Ewoks.getInstance();
+            Attack attack=c.getAttack();
+            synchronized (ewoks) {
+                boolean endwait = true;
+                boolean checkavailable = true;
+                while (endwait) {
+                    for (Integer integer : attack.getSerials()) {
+                        if (!Ewoks.getEwoksArr()[integer].isAvailable()) {
+                            try {
+                                checkavailable = false;
+                                ewoks.wait();
+                            } catch (InterruptedException e) {
+                            }
+                        }
+                    }
+                    if (checkavailable) {
+                        endwait = false;
+                    }
+                }
+                for (Integer integer : attack.getSerials()) {
+                    Ewoks.getEwoksArr()[integer].acquire();
+                }
+                Thread.currentThread().notifyAll();
+            }
+            try {
+                Thread.currentThread().sleep(attack.getDuration());
+                for (Integer integer : attack.getSerials()) {
+                    Ewoks.getEwoksArr()[integer].release();
+                }
+                this.complete(c,true);
+                Diary.getInstance().setTotalAttacks(Diary.getInstance().getTotalAttacks()+1);
+                Thread.currentThread().notifyAll();
+            }
+            catch (Exception e){}
+        });
+        this.subscribeBroadcast(StopSendAttacksBroadcast.class, c -> {
+            Diary.getInstance().setC3POFinish(System.currentTimeMillis());
+        });
+        this.subscribeBroadcast(FinishBroadcast.class, c -> {
+            Diary.getInstance().setC3POTerminate(System.currentTimeMillis());
+            finishrun=true;
+        });
     }
 
     @Override

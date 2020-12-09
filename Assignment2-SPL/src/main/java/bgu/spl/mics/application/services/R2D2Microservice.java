@@ -5,6 +5,8 @@ import bgu.spl.mics.Event;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.DeactivationEvent;
+import bgu.spl.mics.application.messages.FinishBroadcast;
+import bgu.spl.mics.application.passiveObjects.Diary;
 
 /**
  * R2D2Microservices is in charge of the handling {@link DeactivationEvent}.
@@ -18,12 +20,25 @@ public class R2D2Microservice extends MicroService {
 
     public R2D2Microservice(long duration) {
         super("R2D2");
+        dur= duration;
     }
-
+    private long dur;
     @Override
     protected void initialize() {
-        this.subscribeEvent(DeactivationEvent.class, c -> {});
-       // this.subscribeBroadcast(DeactivationEvent.class, c -> {});
+        this.subscribeEvent(DeactivationEvent.class, c -> {
+            try {
+                Thread.currentThread().sleep(dur);
+                Thread.currentThread().notifyAll();
+                this.sendEvent(new BombDestroyerEvent());
+            }
+            catch (Exception e){}
+            this.complete(c,true);
+            Diary.getInstance().setR2D2Deactivate(System.currentTimeMillis());
+        });
+        this.subscribeBroadcast(FinishBroadcast.class, c -> {
+            Diary.getInstance().setR2D2Terminate(System.currentTimeMillis());
+            finishrun=true;
+        });
     }
 
     @Override

@@ -1,5 +1,6 @@
 package bgu.spl.mics;
 
+import bgu.spl.mics.application.messages.FinishBroadcast;
 import bgu.spl.mics.application.messages.FinishEvent;
 
 import java.util.ArrayList;
@@ -30,8 +31,8 @@ public abstract class MicroService implements Runnable, Callback {
 
     protected MessageBusImpl messageBus;
     private String msName;
-    private String messageLoopMannerName;
-    private HashMap<Message,Callback> callbackHashMap;
+    protected HashMap<Class,Callback> callbackHashMap;
+    protected boolean finishrun;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -40,8 +41,8 @@ public abstract class MicroService implements Runnable, Callback {
     public MicroService(String name) {
         messageBus = MessageBusImpl.getInstance();
         msName = name;
-        messageLoopMannerName = null;
         callbackHashMap= new HashMap<>();
+        finishrun=false;
        // callbackQueue = new LinkedList<>();
         //initialize();
     }
@@ -73,6 +74,7 @@ public abstract class MicroService implements Runnable, Callback {
 //    	messageBus.hashmap.at(i).add(callback);
 
         messageBus.subscribeEvent(type, this);
+        callbackHashMap.put(type,callback);
         //callback.call();
     }
 
@@ -102,6 +104,7 @@ public abstract class MicroService implements Runnable, Callback {
 //        messageBus.hashmap.at(i).add(callback);
 
         messageBus.subscribeBroadcast(type,this);
+        callbackHashMap.put(type,callback);
         //callback.call();
     }
 
@@ -118,7 +121,7 @@ public abstract class MicroService implements Runnable, Callback {
      * 	       			null in case no micro-service has subscribed to {@code e.getClass()}.
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
-    	messageBus.sendEvent(e);
+    	Future<T>f= messageBus.sendEvent(e);
     	//call(new Object());
 
 //    	for(Queue q:hashmap){
@@ -127,7 +130,7 @@ public abstract class MicroService implements Runnable, Callback {
 //    	        return f;
 //            }
 //        }
-        return null; 
+        return f;
     }
 
     /**
@@ -172,7 +175,7 @@ public abstract class MicroService implements Runnable, Callback {
      * message.
      */
     protected final void terminate() {
-        messageBus.sendEvent(new FinishEvent());
+        messageBus.sendBroadcast(new FinishBroadcast());
     }
 
     /**
@@ -191,14 +194,13 @@ public abstract class MicroService implements Runnable, Callback {
     public final void run() {
         messageBus.register(this);
         initialize();
+        while (!finishrun)
         try
         {
             Message m= messageBus.awaitMessage(this);
             callbackHashMap.get(m).call(m);
         }
-        catch (InterruptedException e) {
-
-        }
+        catch (InterruptedException ignored) {}
         messageBus.unregister(this);
     }
 
@@ -214,18 +216,5 @@ public abstract class MicroService implements Runnable, Callback {
      * to handle at that point of time.
      * @return a String of the name of the microservice that the event will be added to its queue
      */
-    public String messageLoopMannerCheck(){
-        if(messageLoopMannerName == null){
-            messageLoopMannerName = "HanSolo";
-            return messageLoopMannerName; //HanSolo will handle the event this time
-        }
-        else if(messageLoopMannerName.equals("HanSolo")){
-            messageLoopMannerName = "C3PO";
-            return messageLoopMannerName; //C3PO will handle the event this time
-        }
-        else{
-            messageLoopMannerName = "HanSolo";
-            return messageLoopMannerName; //HanSolo will handle the event this time
-        }
-    }
+
 }

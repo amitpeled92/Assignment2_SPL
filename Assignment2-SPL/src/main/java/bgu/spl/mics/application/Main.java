@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.Reader;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /** This is the Main class of the application. You should parse the input file,
  * create the different components of the application, and run the system.
@@ -38,6 +39,10 @@ public class Main {
 			threads[2]= new Thread(hanSoloMicroservice);
 			threads[3]= new Thread(c3POMicroservice);
 			threads[4]= new Thread(LandoMicroservice);
+			for (Thread t:threads)
+			{
+				t.start();
+			}
 		}
 		catch (Exception e)
 		{

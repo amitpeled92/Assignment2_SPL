@@ -16,7 +16,7 @@ public class Ewoks {
         //this is thread-safe singleton
         private static Ewoks ewoksInstance = new Ewoks();
     }
-    private  Ewok[] ewoksArr;
+    private static Ewok[] ewoksArr;
 
     /**
      * creating Ewoks as a thread safe singleton
@@ -36,5 +36,9 @@ public class Ewoks {
 
     public static Ewoks getInstance(){
         return EwoksSingletonHolder.ewoksInstance;
+    }
+
+    public static Ewok[] getEwoksArr() {
+        return ewoksArr;
     }
 }

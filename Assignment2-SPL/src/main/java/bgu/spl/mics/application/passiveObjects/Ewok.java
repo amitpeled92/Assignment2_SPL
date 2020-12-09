@@ -30,4 +30,8 @@ public class Ewok {
     public void release() {
     	available = false;
     }
+
+	public boolean isAvailable() {
+		return available;
+	}
 }

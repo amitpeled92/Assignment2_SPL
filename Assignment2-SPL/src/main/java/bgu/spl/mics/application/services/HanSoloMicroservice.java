@@ -2,9 +2,16 @@ package bgu.spl.mics.application.services;
 
 
 import bgu.spl.mics.Event;
+import bgu.spl.mics.Message;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.messages.DeactivationEvent;
+import bgu.spl.mics.application.messages.FinishBroadcast;
+import bgu.spl.mics.application.messages.StopSendAttacksBroadcast;
+import bgu.spl.mics.application.passiveObjects.Attack;
+import bgu.spl.mics.application.passiveObjects.Diary;
+import bgu.spl.mics.application.passiveObjects.Ewok;
+import bgu.spl.mics.application.passiveObjects.Ewoks;
 
 /**
  * HanSoloMicroservices is in charge of the handling {@link AttackEvent}.
@@ -23,9 +30,55 @@ public class HanSoloMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-        this.subscribeEvent(AttackEvent.class, c -> {});
-    //    this.subscribeBroadcast(AttackEvent.class, c -> {});
+        this.subscribeEvent(AttackEvent.class, c -> {
+            Ewoks ewoks= Ewoks.getInstance();
+            Attack attack=c.getAttack();
+            synchronized (ewoks) {
+                boolean endwait = true;
+                boolean checkavailable = true;
+                while (endwait) {
+                    for (Integer integer : attack.getSerials()) {
+                        if (!Ewoks.getEwoksArr()[integer].isAvailable()) {
+                            try {
+                                checkavailable = false;
+                                ewoks.wait();
+                            } catch (InterruptedException e) {
+                            }
+                        }
+                    }
+                    if (checkavailable) {
+                        endwait = false;
+                    }
+                    else
+                    {
+                        checkavailable=true;
+                    }
+                }
+                for (Integer integer : attack.getSerials()) {
+                    Ewoks.getEwoksArr()[integer].acquire();
+                }
+                Thread.currentThread().notifyAll();
+            }
+            try {
+                Thread.currentThread().sleep(attack.getDuration());
+                for (Integer integer : attack.getSerials()) {
+                    Ewoks.getEwoksArr()[integer].release();
+                }
+                this.complete(c,true);
+                Diary.getInstance().setTotalAttacks(Diary.getInstance().getTotalAttacks()+1);
+                Thread.currentThread().notifyAll();
+            }
+            catch (Exception e){}
+        });
+        this.subscribeBroadcast(StopSendAttacksBroadcast.class, c -> {
+            Diary.getInstance().setHanSoloFinish(System.currentTimeMillis());
+        });
+        this.subscribeBroadcast(FinishBroadcast.class, c -> {
+            Diary.getInstance().setHanSoloTerminate(System.currentTimeMillis());
+            finishrun=true;
+        });
     }
+
 
     @Override
     public void call(Object c) {
