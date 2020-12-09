@@ -33,6 +33,8 @@ public class Main {
 			LandoMicroservice LandoMicroservice= new LandoMicroservice(lando);
 			Ewoks ewoks= Ewoks.getInstance();
 			ewoks.init(input.getEwoks());
+			Diary diary= Diary.getInstance();
+			diary.setTotalAttacks(0);
 			Thread[] threads= new Thread[5];
 			threads[0]= new Thread(leiaMicroservice);
 			threads[1]= new Thread(hanSoloMicroservice);
@@ -54,12 +56,20 @@ public class Main {
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			FileWriter writer = new FileWriter(args[1]);
 			Diary diary= Diary.getInstance();
+			System.out.println(1);
 			gson.toJson(diary,writer);
+			System.out.println(2);
+
 			writer.flush();
+			System.out.println(3);
+
 			writer.close();
+			System.out.println(4);
+
 		}
 		catch (Exception e)
 		{
+			System.out.println("end exception");
 
 		}
 	}

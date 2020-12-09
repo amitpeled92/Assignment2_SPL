@@ -52,8 +52,8 @@ public class LeiaMicroservice extends MicroService {
                     for (Future future : qfuture) {
                         if (!future.isDone()) {
                             checkalldone = false;
+                            //TODO: need to wait
                         }
-
                     }
                     if (checkalldone) {
                         endwait = false;

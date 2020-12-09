@@ -12,7 +12,7 @@ public class Diary {
         //this is thread-safe singleton
         private static Diary diaryInstance = new Diary();
     }
-    private int totalAttacks=0;
+    private int totalAttacks;
     private long HanSoloFinish;
     private long C3POFinish;
     private long R2D2Deactivate;
