@@ -48,7 +48,7 @@ public class Main {
 		{
 
 		}
-
+		System.out.println("end run");
 		//Create JSON output from Dairy instance (Dairy is a singleton)
 		try {
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();

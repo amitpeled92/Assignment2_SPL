@@ -33,7 +33,6 @@ public class Future<T> {
 	public T get() {
 		while (!isDone)
 		{
-
 			try
 			{
 				wait();

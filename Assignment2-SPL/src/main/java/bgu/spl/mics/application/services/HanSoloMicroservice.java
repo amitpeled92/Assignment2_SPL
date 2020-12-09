@@ -38,11 +38,12 @@ public class HanSoloMicroservice extends MicroService {
                 boolean checkavailable = true;
                 while (endwait) {
                     for (Integer integer : attack.getSerials()) {
-                        if (!Ewoks.getEwoksArr()[integer].isAvailable()) {
+                        if (!Ewoks.getEwoksArr()[integer - 1].isAvailable()) {
                             try {
                                 checkavailable = false;
                                 ewoks.wait();
-                            } catch (InterruptedException e) {}
+                            } catch (InterruptedException e) {
+                            }
                         }
                     }
                     if (checkavailable) {
@@ -51,16 +52,19 @@ public class HanSoloMicroservice extends MicroService {
                         checkavailable = true;
                     }
                 }
-            }
-            for (Integer integer : attack.getSerials()) {
-                Ewoks.getEwoksArr()[integer].acquire();
-                ewoks.notifyAll();
+
+                for (Integer integer : attack.getSerials()) {
+                    Ewoks.getEwoksArr()[integer - 1].acquire();
+                    ewoks.notifyAll();
+                }
             }
             try {
-                Thread.sleep(attack.getDuration());
-                for (Integer integer : attack.getSerials()) {
-                    Ewoks.getEwoksArr()[integer].release();
-                    ewoks.notifyAll();
+                Thread.currentThread().sleep(attack.getDuration());
+                synchronized (ewoks) {
+                    for (Integer integer : attack.getSerials()) {
+                        Ewoks.getEwoksArr()[integer - 1].release();
+                        ewoks.notifyAll();
+                    }
                 }
                 this.complete(c,true);
                 Diary.getInstance().setTotalAttacks(Diary.getInstance().getTotalAttacks()+1);

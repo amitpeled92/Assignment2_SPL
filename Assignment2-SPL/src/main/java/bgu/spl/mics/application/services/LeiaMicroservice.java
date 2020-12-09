@@ -39,19 +39,21 @@ public class LeiaMicroservice extends MicroService {
         this.subscribeEvent(GettingStartedEvent.class, c -> {
             for (int i=0;i<attacks.length;i++)
             {
-                qfuture.add(this.sendEvent(new AttackEvent(attacks[i])));
-                messageBus.getHashMapmessages().notifyAll();
+                synchronized (messageBus.getHashMapmessages()) {
+                    qfuture.add(this.sendEvent(new AttackEvent(attacks[i])));
+                    messageBus.getHashMapmessages().notifyAll();
+                }
             }
           //  Thread.currentThread().notifyAll();
             boolean checkalldone=true;
             boolean endwait=true;
-            synchronized (qfuture) {
+            synchronized (messageBus.getHashMapfuture()) {
                 while (endwait) {
                     for (Future future : qfuture) {
                         if (!future.isDone()) {
                             checkalldone = false;
-                            qfuture.wait();//maybe cause dead lock
                         }
+
                     }
                     if (checkalldone) {
                         endwait = false;
@@ -59,10 +61,11 @@ public class LeiaMicroservice extends MicroService {
                         checkalldone = true;
                     }
                 }
-                this.sendEvent(new DeactivationEvent());
-                this.complete(c,true);
-                qfuture.notifyAll();
             }
+            this.sendEvent(new DeactivationEvent());
+            this.complete(c,true);
+            //messageBus.getHashMapfuture().notifyAll();
+
         });
         this.sendEvent(new GettingStartedEvent());
         this.subscribeBroadcast(FinishBroadcast.class, c -> {

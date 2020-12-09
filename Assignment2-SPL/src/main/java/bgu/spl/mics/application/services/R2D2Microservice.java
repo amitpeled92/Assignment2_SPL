@@ -28,8 +28,8 @@ public class R2D2Microservice extends MicroService {
         this.subscribeEvent(DeactivationEvent.class, c -> {
             try {
                 Thread.currentThread().sleep(dur);
-                messageBus.getHashMapmessages().notifyAll();
                 this.sendEvent(new BombDestroyerEvent());
+                messageBus.getHashMapmessages().notifyAll();
             }
             catch (Exception e){}
             this.complete(c,true);

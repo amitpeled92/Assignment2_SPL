@@ -21,7 +21,7 @@ public class MessageBusImpl implements MessageBus {
 		//this is thread-safe singleton
 		private static MessageBusImpl messageBusInstance = new MessageBusImpl();
 	}
-	protected ConcurrentHashMap<MicroService,Queue<Message>> hashMapmessages;
+	private ConcurrentHashMap<MicroService,Queue<Message>> hashMapmessages;
 	private ConcurrentHashMap<Class<?>,Queue<MicroService>> hashMapofmicroservices;
 	private ConcurrentHashMap<Event,Future> hashMapfuture;
 
@@ -40,11 +40,15 @@ public class MessageBusImpl implements MessageBus {
 		return hashMapmessages;
 	}
 
+	public ConcurrentHashMap<Event, Future> getHashMapfuture() {
+		return hashMapfuture;
+	}
+
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		synchronized (hashMapofmicroservices)
 		{
-			if(hashMapofmicroservices.contains(type))
+			if(hashMapofmicroservices.containsKey(type))
 			{
 				Queue<MicroService> q = hashMapofmicroservices.get(type);
 				q.add(m);
@@ -62,7 +66,7 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
 		synchronized (hashMapofmicroservices) {
-			if (hashMapofmicroservices.contains(type)) {
+			if (hashMapofmicroservices.containsKey(type)) {
 				Queue<MicroService> q = hashMapofmicroservices.get(type);
 				q.add(m);
 			} else {
@@ -78,6 +82,7 @@ public class MessageBusImpl implements MessageBus {
 	public <T> void complete(Event<T> e, T result) {
 		Future<T> future= hashMapfuture.get(e);
 		future.resolve(result);
+//		hashMapfuture.notifyAll();
 	}
 
 	@Override

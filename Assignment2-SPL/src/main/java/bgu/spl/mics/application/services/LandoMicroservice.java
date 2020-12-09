@@ -26,6 +26,7 @@ public class LandoMicroservice  extends MicroService {
             Thread.currentThread().sleep(dur);
             this.sendBroadcast(new FinishBroadcast());
             this.complete(c,true);
+            //this.notifyall;
         });
         this.subscribeBroadcast(FinishBroadcast.class, c -> {
             Diary.getInstance().setLandoTerminate(System.currentTimeMillis());

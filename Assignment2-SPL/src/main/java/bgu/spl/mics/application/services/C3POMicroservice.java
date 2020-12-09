@@ -32,7 +32,7 @@ public class C3POMicroservice extends MicroService {
                 boolean checkavailable = true;
                 while (endwait) {
                     for (Integer integer : attack.getSerials()) {
-                        if (!Ewoks.getEwoksArr()[integer].isAvailable()) {
+                        if (!Ewoks.getEwoksArr()[integer-1].isAvailable()) {
                             try {
                                 checkavailable = false;
                                 ewoks.wait();
@@ -46,18 +46,19 @@ public class C3POMicroservice extends MicroService {
                         checkavailable = true;
                     }
                 }
+                for (Integer integer : attack.getSerials()) {
+                    Ewoks.getEwoksArr()[integer - 1].acquire();
+                    ewoks.notifyAll();
+                }
             }
-            for (Integer integer : attack.getSerials()) {
-                Ewoks.getEwoksArr()[integer].acquire();
-            }
-            ewoks.notifyAll();
-
             try {
                 Thread.currentThread().sleep(attack.getDuration());
-                for (Integer integer : attack.getSerials()) {
-                    Ewoks.getEwoksArr()[integer].release();
+                synchronized (ewoks) {
+                    for (Integer integer : attack.getSerials()) {
+                        Ewoks.getEwoksArr()[integer - 1].release();
+                        ewoks.notifyAll();
+                    }
                 }
-                ewoks.notifyAll();
                 this.complete(c,true);
                 Diary.getInstance().setTotalAttacks(Diary.getInstance().getTotalAttacks()+1);
                 messageBus.getHashMapmessages().notifyAll();

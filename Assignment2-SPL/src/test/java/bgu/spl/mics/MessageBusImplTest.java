@@ -48,7 +48,7 @@ class MessageBusImplTest {
 //        attackEventCheck = new AttackEvent();
         msgBus.register(hanSolo);
         msgBus.subscribeEvent(AttackEvent.class, hanSolo);
-        assertTrue(msgBus.hashMapmessages.containsKey(hanSolo));
+        assertTrue(msgBus.getHashMapmessages().containsKey(hanSolo));
     }
 
     @Test
@@ -57,7 +57,7 @@ class MessageBusImplTest {
         msgBus.register(hanSolo);
         msgBus.subscribeBroadcast(FinishBroadcast.class, hanSolo);
         msgBus.subscribeEvent(AttackEvent.class, hanSolo);
-        assertTrue(msgBus.hashMapmessages.containsKey(hanSolo));
+        assertTrue(msgBus.getHashMapmessages().containsKey(hanSolo));
     }
 
     @Test
@@ -115,7 +115,7 @@ class MessageBusImplTest {
     void register() {
         //hanSolo = new HanSoloMicroservice();
         msgBus.register(hanSolo);
-        assertTrue(msgBus.hashMapmessages.containsKey(hanSolo));
+        assertTrue(msgBus.getHashMapmessages().containsKey(hanSolo));
     }
 
     @Test

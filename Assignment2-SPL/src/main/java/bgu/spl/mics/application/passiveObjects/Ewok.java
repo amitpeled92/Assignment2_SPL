@@ -21,14 +21,14 @@ public class Ewok {
      * Acquires an Ewok
      */
     public void acquire() {
-		available = true;
+		available = false;
     }
 
     /**
      * release an Ewok
      */
     public void release() {
-    	available = false;
+    	available = true;
     }
 
 	public boolean isAvailable() {
