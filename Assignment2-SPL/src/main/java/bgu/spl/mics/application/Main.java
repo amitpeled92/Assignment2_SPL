@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Main
 {
+	public static boolean end=false;
 
 	public static void main(String[] args)
 	{
@@ -53,10 +54,14 @@ public class Main
 
 		}
 		Object lock= new Object();
-		System.out.println("end run");
 		//Create JSON output from Dairy instance (Dairy is a singleton)
 		try { //TODO: Need to make sure output is working
-			Thread.currentThread().wait();
+		//	Thread.currentThread().wait();
+			while (!end)
+			{
+				//no likey
+				//System.out.println("end run");
+			}
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			FileWriter writer = new FileWriter(args[1]);
 			Diary diary = Diary.getInstance();

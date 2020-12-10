@@ -2,6 +2,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Event;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.Main;
 import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.FinishBroadcast;
 import bgu.spl.mics.application.messages.FinishEvent;
@@ -31,6 +32,7 @@ public class LandoMicroservice  extends MicroService {
         this.subscribeBroadcast(FinishBroadcast.class, c -> {
             Diary.getInstance().setLandoTerminate(System.currentTimeMillis());
             finishrun=true;
+            Main.end=true;
         });
     }
 }
