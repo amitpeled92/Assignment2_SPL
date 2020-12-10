@@ -7,6 +7,9 @@ import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.FinishBroadcast;
 import bgu.spl.mics.application.messages.FinishEvent;
 import bgu.spl.mics.application.passiveObjects.Diary;
+//import sun.awt.windows.ThemeReader;
+
+import javax.imageio.stream.ImageInputStream;
 
 /**
  * LandoMicroservice
@@ -29,10 +32,10 @@ public class LandoMicroservice  extends MicroService {
             this.complete(c,true);
             //this.notifyall;
         });
+
         this.subscribeBroadcast(FinishBroadcast.class, c -> {
             Diary.getInstance().setLandoTerminate(System.currentTimeMillis());
-            finishrun=true;
-            Main.end=true;
+            finishrun = true;
         });
     }
 }

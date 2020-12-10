@@ -16,13 +16,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Main
 {
-	public static boolean end=false;
-
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		//Need to convert the JSON input into Leia's Attack array
 
-
+		Thread[] threads = new Thread[5];
 		try {
 			Input input;
 			Gson gson = new Gson();
@@ -41,7 +38,6 @@ public class Main
 			ewoks.init(input.getEwoks());
 			Diary diary = Diary.getInstance();
 			diary.setTotalAttacks(0);
-			Thread[] threads = new Thread[5];
 			threads[0] = new Thread(leiaMicroservice);
 			threads[1] = new Thread(hanSoloMicroservice);
 			threads[2] = new Thread(c3POMicroservice);
@@ -50,33 +46,24 @@ public class Main
 			for (Thread t : threads) {
 				t.start();
 			}
+			for (Thread t : threads) {
+				t.join();
+			}
 		} catch (Exception e) {
 
 		}
-		Object lock= new Object();
+
 		//Create JSON output from Dairy instance (Dairy is a singleton)
-		try { //TODO: Need to make sure output is working
-		//	Thread.currentThread().wait();
-			while (!end)
-			{
-				//no likey
-				//System.out.println("end run");
-			}
+		try {
+
+			System.out.println("end run");
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			FileWriter writer = new FileWriter(args[1]);
 			Diary diary = Diary.getInstance();
-			System.out.println(1);
 			gson.toJson(diary, writer);
-			System.out.println(2);
-
 			writer.flush();
-			System.out.println(3);
-
 			writer.close();
-			System.out.println(4);
-
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("end exception");
 
 		}

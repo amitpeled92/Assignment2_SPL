@@ -80,9 +80,11 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override @SuppressWarnings("unchecked")
 	public <T> void complete(Event<T> e, T result) {
-		Future<T> future= hashMapfuture.get(e);
-		future.resolve(result);
-//		hashMapfuture.notifyAll();
+		synchronized (hashMapfuture) {
+			Future<T> future = hashMapfuture.get(e);
+			future.resolve(result);
+			hashMapfuture.notifyAll();
+		}
 	}
 
 	@Override
