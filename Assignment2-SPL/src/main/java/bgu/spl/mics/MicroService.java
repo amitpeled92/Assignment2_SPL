@@ -62,8 +62,11 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
-        messageBus.subscribeEvent(type, this);
-        callbackHashMap.put(type,callback);
+        synchronized (messageBus.getHashMapofmicroservices()) {
+            messageBus.subscribeEvent(type, this);
+            callbackHashMap.put(type, callback);
+            messageBus.getHashMapofmicroservices().notifyAll();
+        }
     }
 
     /**
@@ -87,8 +90,11 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
-        messageBus.subscribeBroadcast(type,this);
-        callbackHashMap.put(type,callback);
+        synchronized (messageBus.getHashMapofmicroservices()) {
+            messageBus.subscribeBroadcast(type, this);
+            callbackHashMap.put(type, callback);
+            messageBus.getHashMapofmicroservices().notifyAll();
+        }
     }
 
     /**
@@ -104,8 +110,11 @@ public abstract class MicroService implements Runnable {
      * 	       			null in case no micro-service has subscribed to {@code e.getClass()}.
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
-    	Future<T>f= messageBus.sendEvent(e);
-        return f;
+        synchronized (messageBus.getHashMapmessages()) {
+            Future<T> f = messageBus.sendEvent(e);
+            messageBus.getHashMapmessages().notifyAll();
+            return f;
+        }
     }
 
     /**
@@ -115,7 +124,10 @@ public abstract class MicroService implements Runnable {
      * @param b The broadcast message to send
      */
     protected final void sendBroadcast(Broadcast b) {
-        messageBus.sendBroadcast(b);
+        synchronized (messageBus.getHashMapmessages()) {
+            messageBus.sendBroadcast(b);
+            messageBus.getHashMapmessages().notifyAll();
+        }
     }
 
     /**
@@ -129,7 +141,10 @@ public abstract class MicroService implements Runnable {
      *               {@code e}.
      */
     protected final <T> void complete(Event<T> e, T result) {
-    	messageBus.complete(e, result);
+        synchronized (messageBus.getHashMapfuture()) {
+            messageBus.complete(e, result);
+            messageBus.getHashMapfuture().notifyAll();
+        }
     }
 
     /**
