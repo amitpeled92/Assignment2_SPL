@@ -57,7 +57,6 @@ public class Main
 		}
 		//Create JSON output from Dairy instance (Dairy is a singleton)
 		try {
-			System.out.println("end run");
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			FileWriter writer = new FileWriter(args[1]);
 			Diary diary = Diary.getInstance();
