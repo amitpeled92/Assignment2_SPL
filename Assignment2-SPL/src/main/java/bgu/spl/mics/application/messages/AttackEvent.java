@@ -10,10 +10,17 @@ public class AttackEvent implements Event<Boolean> {
     }
 	private Attack attack;
 
+    /** this method is returning the value of attack variable
+     * @return attack
+     */
     public Attack getAttack() {
         return attack;
     }
 
+    /**
+     * this method setting the attack variable
+     * @param attack
+     */
     public void setAttack(Attack attack) {
         this.attack = attack;
     }

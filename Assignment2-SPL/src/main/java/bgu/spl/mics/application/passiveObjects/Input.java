@@ -6,6 +6,10 @@ public class Input {
     long Lando;
     int Ewoks;
 
+    /**
+     * getters and setters for Input's variables
+     */
+
     public int getEwoks() {
         return Ewoks;
     }
@@ -25,9 +29,6 @@ public class Input {
         R2D2 = r2d2;
     }
     public Attack[] getAttacks() {
-      //  for (int i=0;i<attacks.length;i++) {
-        //    attacks[i]= new Attack(attacks[i].serials,attacks[i].duration);
-        //}
         return this.attacks;
     }
     public void setAttacks(Attack[] attacks) {

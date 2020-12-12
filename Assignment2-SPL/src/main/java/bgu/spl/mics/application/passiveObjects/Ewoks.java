@@ -18,13 +18,13 @@ public class Ewoks {
     }
     private static Ewok[] ewoksArr;
 
-    /**
-     * creating Ewoks as a thread safe singleton
-     */
+
     private Ewoks(){
-        //Ewoks going to be a list of every single ewok that the program including
-        //ewoksList=new ArrayList<>();
     }
+
+    /**
+     * initializing the Ewoks array with Ewok objects
+     */
     public void init(int num)
     {
         ewoksArr= new Ewok[num];
@@ -34,6 +34,9 @@ public class Ewoks {
         }
     }
 
+    /**
+     * creating Ewoks as a thread safe singleton
+     */
     public static Ewoks getInstance(){
         return EwoksSingletonHolder.ewoksInstance;
     }

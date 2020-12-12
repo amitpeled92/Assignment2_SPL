@@ -31,6 +31,10 @@ public class Ewok {
     	available = true;
     }
 
+	/**
+	 * checking if the specific ewok is available
+	 * @return available variable
+	 */
 	public boolean isAvailable() {
 		return available;
 	}
