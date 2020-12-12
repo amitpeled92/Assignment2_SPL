@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,9 +20,8 @@ public class Main
 
 	public static void main(String[] args)
 	{
-		//Need to convert the JSON input into Leia's Attack array
-
-
+		boolean isThreadsDone = false;
+		//Converting the JSON input into Leia's Attack array
 		try {
 			Input input;
 			Gson gson = new Gson();
@@ -49,11 +49,39 @@ public class Main
 			for (Thread t : threads) {
 				t.start();
 			}
-		} catch (Exception e) {
+			for (Thread t : threads) {
+				t.join();
+			}
+			isThreadsDone = true;
+		}
+		catch (Exception e) {
 
 		}
-		Object lock= new Object();
-		System.out.println("end run");
+
+
+//		try {
+//			System.out.println("end run");
+//			Thread.currentThread().wait(10000);
+//		}
+//		catch (Exception e){}
+
+
+		//Create JSON output from Dairy instance (Dairy is a singleton)
+		while(isThreadsDone) {
+			Diary diary = Diary.getInstance();
+			try (FileWriter file = new FileWriter(args[1])) {
+				Gson gson = new Gson();
+				gson.toJson(diary, file);
+				file.flush();
+				//file.close();
+				System.out.println(diary.toString()); //diary debugger
+			} catch (IOException e) {
+				System.out.println("error in output file");
+			}
+			isThreadsDone = false;
+		}
+
+		/*
 		//Create JSON output from Dairy instance (Dairy is a singleton)
 		try { //TODO: Need to make sure output is working
 			Thread.currentThread().wait();
@@ -75,6 +103,7 @@ public class Main
 			System.out.println("end exception");
 
 		}
+		 */
 	}
 
 }

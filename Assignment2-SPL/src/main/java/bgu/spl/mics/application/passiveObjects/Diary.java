@@ -70,13 +70,12 @@ public class Diary {
     public static Diary getInstance(){
         return DairySingletonHolder.diaryInstance;
     }
-    /**
-     * getter for output variable
-     * @return output
-     */
 
-    /**
-     * setter for output variable
-     * @param str is a line which we want to add to Diary's output
-     */
+    public String toString(){
+        String str="";
+        str += "totalAttacks: " + totalAttacks + "\n" + "hanSoloFinish: " + HanSoloFinish + "\n" + "c3poFinish: " + C3POFinish + "\n" +
+                "R2D2Deactivate: " + R2D2Deactivate + "\n" + "LieaTerminate: " + LeiaTerminate + "\n" + "HanSoloTerminate: " + HanSoloTerminate + "\n" +
+                "C3POTerminate: " + C3POTerminate + "\n" + "R2D2Terminate: " + R2D2Terminate + "\n" + "LandoTerminate: " + LandoTerminate;
+        return str;
+    }
 }
