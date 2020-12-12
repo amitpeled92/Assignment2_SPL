@@ -1,12 +1,8 @@
 package bgu.spl.mics;
 
 import bgu.spl.mics.application.messages.FinishBroadcast;
-import bgu.spl.mics.application.messages.FinishEvent;
-import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.concurrent.PriorityBlockingQueue;
 
 /**
  * The MicroService is an abstract class that any micro-service in the system
@@ -42,8 +38,6 @@ public abstract class MicroService implements Runnable {
         msName = name;
         callbackHashMap= new HashMap<>();
         finishrun=false;
-       // callbackQueue = new LinkedList<>();
-        //initialize();
     }
 
     /**
@@ -68,13 +62,8 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
-//      Queue<E> q = new PriorityBlockingQueue<>();
-//    	messageBus.hashmap.at(i).add(q);
-//    	messageBus.hashmap.at(i).add(callback);
-
         messageBus.subscribeEvent(type, this);
         callbackHashMap.put(type,callback);
-        //callback.call();
     }
 
     /**
@@ -98,13 +87,8 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
-//        Queue<B> q = new PriorityBlockingQueue<>();
-//        messageBus.hashmap.at(i).add(q);
-//        messageBus.hashmap.at(i).add(callback);
-
         messageBus.subscribeBroadcast(type,this);
         callbackHashMap.put(type,callback);
-        //callback.call();
     }
 
     /**
@@ -121,14 +105,6 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
     	Future<T>f= messageBus.sendEvent(e);
-    	//call(new Object());
-
-//    	for(Queue q:hashmap){
-//    	    if(q.getClass() == e.getClass()){
-//    	        Future<T> f = new Future<>();
-//    	        return f;
-//            }
-//        }
         return f;
     }
 
@@ -140,13 +116,6 @@ public abstract class MicroService implements Runnable {
      */
     protected final void sendBroadcast(Broadcast b) {
         messageBus.sendBroadcast(b);
-        //call(new Object());
-
-//        for(Queue q:hashmap){
-//            if(q.getClass() == b.getClass()){
-//                Future<Boolean> f = new Future<>();
-//            }
-//        }
     }
 
     /**
@@ -161,7 +130,6 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T> void complete(Event<T> e, T result) {
     	messageBus.complete(e, result);
-        //call(new Object());
     }
 
     /**
@@ -193,6 +161,7 @@ public abstract class MicroService implements Runnable {
     public final void run() {
         messageBus.register(this);
         initialize();
+      //  messageBus.register(this);
         while (!finishrun) {
             try
             {

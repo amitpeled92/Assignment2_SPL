@@ -1,5 +1,6 @@
 package bgu.spl.mics.application;
 
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.services.*;
 import com.google.gson.Gson;
@@ -43,19 +44,19 @@ public class Main
 			threads[2] = new Thread(c3POMicroservice);
 			threads[3] = new Thread(r2D2Microservice);
 			threads[4] = new Thread(LandoMicroservice);
-			for (Thread t : threads) {
-				t.start();
+			for (int i=1;i<threads.length;i++) {
+				threads[i].start();
 			}
+			threads[0].start();
 			for (Thread t : threads) {
 				t.join();
 			}
 		} catch (Exception e) {
+			System.out.println("end exception");
 
 		}
-
 		//Create JSON output from Dairy instance (Dairy is a singleton)
 		try {
-
 			System.out.println("end run");
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			FileWriter writer = new FileWriter(args[1]);

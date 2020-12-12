@@ -1,15 +1,11 @@
 package bgu.spl.mics.application.services;
 
-import bgu.spl.mics.Event;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.Main;
 import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.FinishBroadcast;
-import bgu.spl.mics.application.messages.FinishEvent;
 import bgu.spl.mics.application.passiveObjects.Diary;
 //import sun.awt.windows.ThemeReader;
 
-import javax.imageio.stream.ImageInputStream;
 
 /**
  * LandoMicroservice
@@ -30,7 +26,6 @@ public class LandoMicroservice  extends MicroService {
             Thread.currentThread().sleep(dur);
             this.sendBroadcast(new FinishBroadcast());
             this.complete(c,true);
-            //this.notifyall;
         });
 
         this.subscribeBroadcast(FinishBroadcast.class, c -> {

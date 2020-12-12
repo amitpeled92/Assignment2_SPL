@@ -1,16 +1,11 @@
 package bgu.spl.mics.application.services;
 
 
-import bgu.spl.mics.Event;
-import bgu.spl.mics.Message;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
-import bgu.spl.mics.application.messages.DeactivationEvent;
 import bgu.spl.mics.application.messages.FinishBroadcast;
-import bgu.spl.mics.application.messages.StopSendAttacksBroadcast;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.passiveObjects.Diary;
-import bgu.spl.mics.application.passiveObjects.Ewok;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 
 /**
@@ -73,13 +68,12 @@ public class HanSoloMicroservice extends MicroService {
             }
             catch (Exception e){}
         });
-        this.subscribeBroadcast(StopSendAttacksBroadcast.class, c -> {
-            Diary.getInstance().setHanSoloFinish(System.currentTimeMillis());
-        });
+
         this.subscribeBroadcast(FinishBroadcast.class, c -> {
             Diary.getInstance().setHanSoloTerminate(System.currentTimeMillis());
             finishrun=true;
         });
+
     }
 
 

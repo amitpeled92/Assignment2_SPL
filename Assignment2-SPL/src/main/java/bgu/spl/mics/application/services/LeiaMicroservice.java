@@ -44,7 +44,6 @@ public class LeiaMicroservice extends MicroService {
                     messageBus.getHashMapmessages().notifyAll();
                 }
             }
-          //  Thread.currentThread().notifyAll();
             boolean checkalldone=true;
             boolean endwait=true;
             synchronized (messageBus.getHashMapfuture()) {
@@ -52,7 +51,6 @@ public class LeiaMicroservice extends MicroService {
                     for (Future future : qfuture) {
                         if (!future.isDone()) {
                             checkalldone = false;
-                            //TODO: need to wait
                             messageBus.getHashMapfuture().wait();
                         }
                     }
@@ -65,14 +63,12 @@ public class LeiaMicroservice extends MicroService {
             }
             this.sendEvent(new DeactivationEvent());
             this.complete(c,true);
-            //messageBus.getHashMapfuture().notifyAll();
-
         });
-        this.sendEvent(new GettingStartedEvent());
         this.subscribeBroadcast(FinishBroadcast.class, c -> {
             Diary.getInstance().setLeiaTerminate(System.currentTimeMillis());
             finishrun=true;
         });
+        this.sendEvent(new GettingStartedEvent());
     }
 
 }

@@ -66,13 +66,12 @@ public class C3POMicroservice extends MicroService {
             }
             catch (Exception e){}
         });
-        this.subscribeBroadcast(StopSendAttacksBroadcast.class, c -> {
-            Diary.getInstance().setC3POFinish(System.currentTimeMillis());
-        });
+
         this.subscribeBroadcast(FinishBroadcast.class, c -> {
             Diary.getInstance().setC3POTerminate(System.currentTimeMillis());
             finishrun=true;
         });
+
     }
 
 }
