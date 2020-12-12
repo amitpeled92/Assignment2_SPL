@@ -18,8 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Main
 {
 	public static void main(String[] args) {
-		//Need to convert the JSON input into Leia's Attack array
-
+		//Converting the JSON input into Leia's Attack array
 		Thread[] threads = new Thread[5];
 		try {
 			Input input;
@@ -51,11 +50,9 @@ public class Main
 			for (Thread t : threads) {
 				t.join();
 			}
-		} catch (Exception e) {
-			System.out.println("end exception");
-
 		}
-		//Create JSON output from Dairy instance (Dairy is a singleton)
+		catch (Exception e) {}
+		//Creating JSON output from Dairy instance (Dairy is a singleton)
 		try {
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			FileWriter writer = new FileWriter(args[1]);
@@ -63,11 +60,8 @@ public class Main
 			gson.toJson(diary, writer);
 			writer.flush();
 			writer.close();
-		} catch (Exception e) {
-			System.out.println("end exception");
-
 		}
+		catch (Exception e) { }
 	}
-
 }
 

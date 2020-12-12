@@ -12,6 +12,17 @@ public class Diary {
         //this is thread-safe singleton
         private static Diary diaryInstance = new Diary();
     }
+
+    /**
+     * creating Diary as a thread safe singleton
+     */
+    private Diary(){}
+
+    public static Diary getInstance(){
+        return DairySingletonHolder.diaryInstance;
+    }
+
+
     private int totalAttacks;
     private long HanSoloFinish;
     private long C3POFinish;
@@ -21,6 +32,10 @@ public class Diary {
     private long C3POTerminate;
     private long R2D2Terminate;
     private long LandoTerminate;
+
+    /**
+     * getters and setters for Diary variables
+     */
 
     public void setTotalAttacks(int totalAttacks) {
         this.totalAttacks = totalAttacks;
@@ -61,22 +76,4 @@ public class Diary {
     public int getTotalAttacks() {
         return totalAttacks;
     }
-
-    /**
-     * creating Diary as a thread safe singleton
-     */
-    private Diary(){}
-
-    public static Diary getInstance(){
-        return DairySingletonHolder.diaryInstance;
-    }
-    /**
-     * getter for output variable
-     * @return output
-     */
-
-    /**
-     * setter for output variable
-     * @param str is a line which we want to add to Diary's output
-     */
 }
