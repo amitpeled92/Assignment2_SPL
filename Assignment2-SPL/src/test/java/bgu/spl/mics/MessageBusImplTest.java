@@ -40,15 +40,15 @@ class MessageBusImplTest {
 
     @AfterEach
     void tearDown() {
+        msgBus.unregister(hanSolo);
+        msgBus.unregister(leia);
     }
 
     @Test
     void subscribeEvent() {
-//        hanSolo = new HanSoloMicroservice();
-//        attackEventCheck = new AttackEvent();
         msgBus.register(hanSolo);
         msgBus.subscribeEvent(AttackEvent.class, hanSolo);
-        assertTrue(msgBus.getHashMapmessages().containsKey(hanSolo));
+        assertTrue(msgBus.getHashMapofmicroservices().get(AttackEvent.class).contains(hanSolo));
     }
 
     @Test
@@ -56,8 +56,7 @@ class MessageBusImplTest {
         //hanSolo = new HanSoloMicroservice();
         msgBus.register(hanSolo);
         msgBus.subscribeBroadcast(FinishBroadcast.class, hanSolo);
-        msgBus.subscribeEvent(AttackEvent.class, hanSolo);
-        assertTrue(msgBus.getHashMapmessages().containsKey(hanSolo));
+        assertTrue(msgBus.getHashMapofmicroservices().get(FinishBroadcast.class).contains(hanSolo));
     }
 
     @Test
@@ -65,27 +64,25 @@ class MessageBusImplTest {
         msgBus.register(hanSolo);
         msgBus.subscribeEvent(AttackEvent.class, hanSolo);
         Future<Boolean> f = msgBus.sendEvent(attackEventCheck);
-        try {
-            msgBus.awaitMessage(hanSolo);
-            msgBus.complete(attackEventCheck, true);
-            //f.resolve(true);
-            assertTrue(f.get());
-        }
-        catch (Exception e){
-            fail();
-        }
+        msgBus.complete(attackEventCheck, true);
+        assertTrue(f.get());
+        msgBus.complete(attackEventCheck, false);
+        assertFalse(f.get());
     }
 
     @Test
     void sendBroadcast() {
-        //hanSolo = new HanSoloMicroservice();
         Broadcast attackEventCheckb = new FinishBroadcast();
         msgBus.register(hanSolo);
+        msgBus.register(leia);
         msgBus.subscribeBroadcast(FinishBroadcast.class,hanSolo);
-        msgBus.sendBroadcast(/*(Broadcast)*/ attackEventCheckb);
+        msgBus.subscribeBroadcast(FinishBroadcast.class,leia);
+        msgBus.sendBroadcast(attackEventCheckb);
         try {
-            AttackEvent attackEventNew = (AttackEvent) msgBus.awaitMessage(hanSolo);
-            assertEquals(attackEventCheckb, attackEventNew);
+            FinishBroadcast attackEventHan = (FinishBroadcast) msgBus.awaitMessage(hanSolo);
+            assertEquals(attackEventCheckb, attackEventHan);
+            FinishBroadcast attackEventLeia = (FinishBroadcast) msgBus.awaitMessage(leia);
+            assertEquals(attackEventCheckb, attackEventLeia);
         }
         catch (Exception e)
         {
@@ -95,15 +92,22 @@ class MessageBusImplTest {
 
     @Test
     void sendEvent() {
-//        attackEventCheck = new AttackEvent();
-//        hanSolo = new HanSoloMicroservice();
+        List<Integer> serialNumbers= new LinkedList<>();
+        serialNumbers.add(1);
+        int duration=1;
+        Attack a2= new Attack(serialNumbers,duration);
+        AttackEvent attackEventCheck2= new AttackEvent(a2);
         msgBus.register(hanSolo);
+        msgBus.register(leia);
         msgBus.subscribeEvent(AttackEvent.class,hanSolo);
+        msgBus.subscribeEvent(AttackEvent.class,leia);
         msgBus.sendEvent(attackEventCheck);
-
+        msgBus.sendEvent(attackEventCheck2);
         try {
-            AttackEvent attackEventNew = (AttackEvent) msgBus.awaitMessage(hanSolo);
-            assertEquals(attackEventCheck, attackEventNew);
+            AttackEvent attackEventHan = (AttackEvent) msgBus.awaitMessage(hanSolo);
+            assertEquals(attackEventCheck, attackEventHan);
+            AttackEvent attackEventLeia = (AttackEvent) msgBus.awaitMessage(leia);
+            assertEquals(attackEventCheck2, attackEventLeia);
         }
         catch (Exception e)
         {
@@ -113,7 +117,6 @@ class MessageBusImplTest {
 
     @Test
     void register() {
-        //hanSolo = new HanSoloMicroservice();
         msgBus.register(hanSolo);
         assertTrue(msgBus.getHashMapmessages().containsKey(hanSolo));
     }
@@ -130,18 +133,16 @@ class MessageBusImplTest {
      */
     @Test
     void awaitMessage() {
-        //hanSolo = new HanSoloMicroservice();
-        AttackEvent at = null;
         msgBus.register(hanSolo);
-        //attackEventCheck = new AttackEvent();
+        msgBus.subscribeEvent(AttackEvent.class,hanSolo);
         msgBus.sendEvent(attackEventCheck);
         try {
-            at = (AttackEvent) msgBus.awaitMessage(hanSolo);
+            AttackEvent at = (AttackEvent) msgBus.awaitMessage(hanSolo);
+            assertEquals(attackEventCheck, at);
         }
         catch (Exception e){
             //throw new Exception(e.Message +" , the event was interrupted");
             fail();
         }
-        assertEquals(attackEventCheck, at);
     }
 }

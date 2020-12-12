@@ -19,7 +19,7 @@ public class Future<T> {
 	 */
 	public Future() {
 		isDone = false;
-		result = null;
+		result = (T) new Object();
 	}
 	
 	/**
@@ -35,13 +35,16 @@ public class Future<T> {
 		{
 			try
 			{
-				wait();
+				synchronized (result) {
+					while (!isDone) {
+						result.wait();
+					}
+				}
 			}
 			catch (Exception e)
 			{
 			}
 		}
-		notifyAll();
 		return result;
 	}
 	
@@ -51,6 +54,10 @@ public class Future<T> {
 	public void resolve (T result) {
 		this.result = result;
 		isDone = true;
+		synchronized (result)
+		{
+			result.notifyAll();
+		}
 	}
 	
 	/**
@@ -76,16 +83,20 @@ public class Future<T> {
 		if (!isDone) {
 			try
 			{
-				wait(timeout);
+				synchronized (result) {
+					result.wait(timeout);
+				}
 			}
 			catch (InterruptedException e)
 			{
 			}
 			if (isDone)
-				notifyAll();
 				return result;
+			else
+				return null;
 		}
-		notifyAll();
-		return null;
+		else
+			return result;
+
 	}
 }

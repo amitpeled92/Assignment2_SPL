@@ -44,6 +44,10 @@ public class MessageBusImpl implements MessageBus {
 		return hashMapfuture;
 	}
 
+	public ConcurrentHashMap<Class<?>, Queue<MicroService>> getHashMapofmicroservices() {
+		return hashMapofmicroservices;
+	}
+
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		synchronized (hashMapofmicroservices)
