@@ -29,7 +29,6 @@ public class R2D2Microservice extends MicroService {
             try {
                 Thread.currentThread().sleep(dur);
                 this.sendEvent(new BombDestroyerEvent());
-                messageBus.getHashMapmessages().notifyAll();
             }
             catch (Exception e){}
             this.complete(c,true);

@@ -37,12 +37,8 @@ public class LeiaMicroservice extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeEvent(GettingStartedEvent.class, c -> {
-            for (int i=0;i<attacks.length;i++)
-            {
-                synchronized (messageBus.getHashMapmessages()) {
-                    qfuture.add(this.sendEvent(new AttackEvent(attacks[i])));
-                    messageBus.getHashMapmessages().notifyAll();
-                }
+            for (int i=0;i<attacks.length;i++) {
+                qfuture.add(this.sendEvent(new AttackEvent(attacks[i])));
             }
             boolean checkalldone=true;
             boolean endwait=true;

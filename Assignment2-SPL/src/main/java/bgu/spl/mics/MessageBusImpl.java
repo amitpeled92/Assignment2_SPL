@@ -50,59 +50,72 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		if (hashMapofmicroservices.containsKey(type)) {
-			Queue<MicroService> q = hashMapofmicroservices.get(type);
-			q.add(m);
-		} else {
-			Queue<MicroService> q = new LinkedList<>();
-			q.add(m);
-			hashMapofmicroservices.put(type, q);
+		synchronized (hashMapofmicroservices) {
+			if (hashMapofmicroservices.containsKey(type)) {
+				Queue<MicroService> q = hashMapofmicroservices.get(type);
+				q.add(m);
+			} else {
+				Queue<MicroService> q = new LinkedList<>();
+				q.add(m);
+				hashMapofmicroservices.put(type, q);
+			}
+			hashMapofmicroservices.notifyAll();
 		}
 	}
 
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-		if (hashMapofmicroservices.containsKey(type)) {
-			Queue<MicroService> q = hashMapofmicroservices.get(type);
-			q.add(m);
-		} else {
-			Queue<MicroService> q = new LinkedList<>();
-			q.add(m);
-			hashMapofmicroservices.put(type, q);
+		synchronized (hashMapofmicroservices) {
+			if (hashMapofmicroservices.containsKey(type)) {
+				Queue<MicroService> q = hashMapofmicroservices.get(type);
+				q.add(m);
+			} else {
+				Queue<MicroService> q = new LinkedList<>();
+				q.add(m);
+				hashMapofmicroservices.put(type, q);
+			}
+			hashMapofmicroservices.notifyAll();
 		}
 	}
-
 	@Override @SuppressWarnings("unchecked")
 	public <T> void complete(Event<T> e, T result) {
-		Future<T> future = hashMapfuture.get(e);
-		future.resolve(result);
+		synchronized (hashMapfuture) {
+			Future<T> future = hashMapfuture.get(e);
+			future.resolve(result);
+			hashMapfuture.notifyAll();
+		}
 	}
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
-		for (Class c : hashMapofmicroservices.keySet()) {
-			if (c == b.getClass()) {
-				for (MicroService m : hashMapofmicroservices.get(c)) {
-					hashMapmessages.get(m).add(b);
+		synchronized (hashMapmessages) {
+			for (Class c : hashMapofmicroservices.keySet()) {
+				if (c == b.getClass()) {
+					for (MicroService m : hashMapofmicroservices.get(c)) {
+						hashMapmessages.get(m).add(b);
+					}
 				}
 			}
+			hashMapmessages.notifyAll();
 		}
 	}
 
 	
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
-		Future<T> future = new Future<T>();
-		for (Class c : hashMapofmicroservices.keySet()) {
-			if (c == e.getClass()) {
-				MicroService m = hashMapofmicroservices.get(c).poll();
-				hashMapmessages.get(m).add(e);
-				hashMapofmicroservices.get(c).add(m);
+		synchronized (hashMapmessages) {
+			Future<T> future = new Future<T>();
+			for (Class c : hashMapofmicroservices.keySet()) {
+				if (c == e.getClass()) {
+					MicroService m = hashMapofmicroservices.get(c).poll();
+					hashMapmessages.get(m).add(e);
+					hashMapofmicroservices.get(c).add(m);
+				}
 			}
+			hashMapfuture.put(e, future);
+			hashMapmessages.notifyAll();
+			return future;
 		}
-
-		hashMapfuture.put(e, future);
-		return future;
 	}
 
 	@Override
