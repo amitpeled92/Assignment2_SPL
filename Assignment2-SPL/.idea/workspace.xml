@@ -73,7 +73,7 @@
       <recent name="C:\Users\amitp\Documents\GitHub\Assignment2_SPL\Assignment2-SPL\src\main\java\bgu\spl\mics\application" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JUnit.EwokTest">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="bgu.spl.mics.application.Main" />
       <module name="spl211" />
@@ -220,10 +220,10 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.EwokTest" />
-        <item itemvalue="JUnit.MessageBusImplTest" />
         <item itemvalue="JUnit.FutureTest" />
+        <item itemvalue="JUnit.MessageBusImplTest" />
+        <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.FutureTest.testGet" />
       </list>
     </recent_temporary>
