@@ -35,9 +35,9 @@ public class Future<T> {
 		{
 			try
 			{
-				synchronized (result) {
+				synchronized (this) {
 					while (!isDone) {
-						result.wait();
+						this.wait();
 					}
 				}
 			}
@@ -54,9 +54,9 @@ public class Future<T> {
 	public void resolve (T result) {
 		this.result = result;
 		isDone = true;
-		synchronized (result)
+		synchronized (this)
 		{
-			result.notifyAll();
+			this.notifyAll();
 		}
 	}
 	
@@ -83,8 +83,8 @@ public class Future<T> {
 		if (!isDone) {
 			try
 			{
-				synchronized (result) {
-					result.wait(timeout);
+				synchronized (this) {
+					this.wait(timeout);
 				}
 			}
 			catch (InterruptedException e)

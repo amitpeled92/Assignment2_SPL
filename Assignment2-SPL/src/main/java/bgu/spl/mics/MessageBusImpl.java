@@ -3,6 +3,7 @@ package bgu.spl.mics;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.services.C3POMicroservice;
 import bgu.spl.mics.application.services.HanSoloMicroservice;
+import bgu.spl.mics.application.services.LeiaMicroservice;
 
 import javax.crypto.IllegalBlockSizeException;
 import java.util.HashMap;
@@ -35,27 +36,27 @@ public class MessageBusImpl implements MessageBus {
 	public static MessageBusImpl getInstance(){
 		return MessageBusSingletonHolder.messageBusInstance;
 	}
-
-	public ConcurrentHashMap<MicroService, Queue<Message>> getHashMapmessages() {
+//The Getters are for tests
+	protected ConcurrentHashMap<MicroService, Queue<Message>> getHashMapmessages() {
 		return hashMapmessages;
 	}
 
-	public ConcurrentHashMap<Event, Future> getHashMapfuture() {
+	protected ConcurrentHashMap<Event, Future> getHashMapfuture() {
 		return hashMapfuture;
 	}
 
-	public ConcurrentHashMap<Class<?>, Queue<MicroService>> getHashMapofmicroservices() {
+	protected ConcurrentHashMap<Class<?>, Queue<MicroService>> getHashMapofmicroservices() {
 		return hashMapofmicroservices;
 	}
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
+		Queue<MicroService> q = new LinkedList<>();
 		synchronized (hashMapofmicroservices) {
 			if (hashMapofmicroservices.containsKey(type)) {
-				Queue<MicroService> q = hashMapofmicroservices.get(type);
+				q = hashMapofmicroservices.get(type);
 				q.add(m);
 			} else {
-				Queue<MicroService> q = new LinkedList<>();
 				q.add(m);
 				hashMapofmicroservices.put(type, q);
 			}
@@ -65,12 +66,12 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
+		Queue<MicroService> q = new LinkedList<>();
 		synchronized (hashMapofmicroservices) {
 			if (hashMapofmicroservices.containsKey(type)) {
-				Queue<MicroService> q = hashMapofmicroservices.get(type);
+				q = hashMapofmicroservices.get(type);
 				q.add(m);
 			} else {
-				Queue<MicroService> q = new LinkedList<>();
 				q.add(m);
 				hashMapofmicroservices.put(type, q);
 			}
@@ -79,11 +80,8 @@ public class MessageBusImpl implements MessageBus {
 	}
 	@Override @SuppressWarnings("unchecked")
 	public <T> void complete(Event<T> e, T result) {
-		synchronized (hashMapfuture) {
-			Future<T> future = hashMapfuture.get(e);
-			future.resolve(result);
-			hashMapfuture.notifyAll();
-		}
+		Future<T> future = hashMapfuture.get(e);
+		future.resolve(result);
 	}
 
 	@Override
@@ -103,8 +101,8 @@ public class MessageBusImpl implements MessageBus {
 	
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
+		Future<T> future = new Future<T>();
 		synchronized (hashMapmessages) {
-			Future<T> future = new Future<T>();
 			for (Class c : hashMapofmicroservices.keySet()) {
 				if (c == e.getClass()) {
 					MicroService m = hashMapofmicroservices.get(c).poll();
@@ -114,8 +112,8 @@ public class MessageBusImpl implements MessageBus {
 			}
 			hashMapfuture.put(e, future);
 			hashMapmessages.notifyAll();
-			return future;
 		}
+		return future;
 	}
 
 	@Override

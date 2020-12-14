@@ -34,26 +34,23 @@ public class LeiaMicroservice extends MicroService {
 		qfuture= new LinkedList<>();
     }
 
+    public Queue<Future> getQfuture() {
+        return qfuture;
+    }
+
     @Override
     protected void initialize() {
         this.subscribeEvent(GettingStartedEvent.class, c -> {
             for (int i=0;i<attacks.length;i++) {
                 qfuture.add(this.sendEvent(new AttackEvent(attacks[i])));
             }
-            boolean checkalldone=true;
-            boolean endwait=true;
-            synchronized (messageBus.getHashMapfuture()) {
-                while (endwait) {
-                    for (Future future : qfuture) {
-                        if (!future.isDone()) {
-                            checkalldone = false;
-                            messageBus.getHashMapfuture().wait();
-                        }
-                    }
-                    if (checkalldone) {
-                        endwait = false;
-                    } else {
-                        checkalldone = true;
+            for (Future f:qfuture)
+            {
+                synchronized (f)
+                {
+                    while (!f.isDone())
+                    {
+                        f.wait();
                     }
                 }
             }
